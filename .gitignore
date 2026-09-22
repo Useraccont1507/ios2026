@@ -1,0 +1,45 @@
+# macOS
+.DS_Store
+*.swp
+
+# Xcode — user settings & build artifacts
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+build/
+DerivedData/
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Xcode Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/
+Package.resolved
+
+# CocoaPods
+Pods/
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Accio / dependencies
+Dependencies/
+.accio/
+
+# Injection / misc
+iOSInjectionProject/
