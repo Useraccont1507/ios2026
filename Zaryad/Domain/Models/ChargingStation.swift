@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - ChargingStation
 struct ChargingStation: Sendable {
-    let id: Int?
+    let id: Int
     let uuid: String?
     let addressInfo: AddressInfo?
     let operatorInfo: OperatorInfo?
