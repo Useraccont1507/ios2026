@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct FavoriteStationUIModel: Identifiable {
+struct FavoriteStationUIModel: Identifiable, Equatable {
     let id: Int
     let name: String
     let address: String
@@ -18,7 +18,7 @@ struct FavoriteStationUIModel: Identifiable {
     let needToDelete: Bool
 }
 
-enum PowerTier {
+enum PowerTier: Equatable {
     case slow, fast, high, ultra
 
     init(kW: Int?) {

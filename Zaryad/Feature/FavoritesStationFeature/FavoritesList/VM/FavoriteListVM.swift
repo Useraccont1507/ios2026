@@ -58,7 +58,7 @@ final class FavoriteListVM: PFavoriteListVM {
     }
     private func markAsDelete(for station: FavoriteStationUIModel, needToDelete: Bool) {
         guard case let .list(stations) = state else { return }
-        var modifiedStations = stations.map {
+        let modifiedStations = stations.map {
             FavoriteStationUIModel(
                 id: $0.id,
                 name: $0.name,
@@ -67,7 +67,7 @@ final class FavoriteListVM: PFavoriteListVM {
                 connectorsText: $0.connectorsText,
                 rate: $0.rate,
                 note: $0.note,
-                needToDelete: needToDelete
+                needToDelete: station == $0 ? needToDelete : $0.needToDelete
             )
         }
         self.state = .list(stations: modifiedStations)
