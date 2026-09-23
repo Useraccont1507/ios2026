@@ -27,7 +27,7 @@ final class FavoriteListVM: PFavoriteListVM {
         Task { @MainActor in
             do {
                 guard !station.needToDelete else { return }
-                guard let domain = domainStationsById[station.id] else { return }
+                guard let domain = domainStationsById[station.stationId] else { return }
                 markAsDelete(for: station, needToDelete: true)
                 try await repo.removeFavorite(station: domain)
                 loadStations()
@@ -69,6 +69,7 @@ final class FavoriteListVM: PFavoriteListVM {
         let modifiedStations = stations.map {
             FavoriteStationUIModel(
                 id: $0.id,
+                stationId: $0.stationId,
                 name: $0.name,
                 address: $0.address,
                 power: $0.power,

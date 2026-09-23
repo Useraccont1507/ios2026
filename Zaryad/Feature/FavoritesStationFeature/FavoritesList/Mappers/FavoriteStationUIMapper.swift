@@ -23,7 +23,8 @@ struct FavoriteStationUIMapper {
         let maxPowerKW = station.connections?.compactMap { $0.powerKW }.max()
 
         return FavoriteStationUIModel(
-            id: station.id,
+            id: UUID(),
+            stationId: station.id,
             name: station.addressInfo?.title ?? "Без назви",
             address: address,
             power: PowerTier(kW: maxPowerKW),

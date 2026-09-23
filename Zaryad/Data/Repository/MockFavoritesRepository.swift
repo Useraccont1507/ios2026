@@ -19,7 +19,7 @@ final class MockFavoritesRepository: PFavoritesRepository, Sendable {
     }
 
     func loadFavorites(forced: Bool) async throws -> [FavoriteStation] {
-        try await Task.sleep(for: .seconds(0.4))   // імітація мережі
+        try await Task.sleep(for: .seconds(0.4))
         return favorites
     }
 
@@ -30,7 +30,9 @@ final class MockFavoritesRepository: PFavoritesRepository, Sendable {
 
     func removeFavorite(station: FavoriteStation) async throws {
         try await Task.sleep(for: .seconds(0.4))
-        favorites.removeAll { $0.station.id == station.station.id }
+        if let index = favorites.firstIndex(where: { $0.station.id == station.station.id }) {
+            favorites.remove(at: index)
+        }
     }
 
     func observeEvents(_ handler: @escaping @MainActor @Sendable (FavoritesStationEvent) -> Void) {

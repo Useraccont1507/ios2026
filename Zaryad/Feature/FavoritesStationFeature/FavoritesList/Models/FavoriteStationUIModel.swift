@@ -8,7 +8,8 @@
 import UIKit
 
 struct FavoriteStationUIModel: Identifiable, Equatable {
-    let id: Int
+    let id: UUID
+    let stationId: Int
     let name: String
     let address: String
     let power: PowerTier
