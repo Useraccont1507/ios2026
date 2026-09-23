@@ -15,6 +15,7 @@ struct FavoriteStationUIModel: Identifiable {
     let connectorsText: String
     let rate: Int
     let note: String?
+    let needToDelete: Bool
 }
 
 enum PowerTier {

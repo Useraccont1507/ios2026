@@ -10,5 +10,6 @@ import Foundation
 protocol PFavoriteListVM: ObservableObject {
     var state: FavoriteListViewState { get set }
     
-    func refreshStations()
+    @Sendable func refreshStations() async
+    func remove(station: FavoriteStationUIModel)
 }

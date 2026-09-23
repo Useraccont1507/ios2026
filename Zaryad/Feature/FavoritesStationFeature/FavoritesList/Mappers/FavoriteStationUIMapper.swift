@@ -29,7 +29,8 @@ struct FavoriteStationUIMapper {
             power: PowerTier(kW: maxPowerKW),
             connectorsText: connectors.joined(separator: ", "),
             rate: favorite.rate,
-            note: favorite.note
+            note: favorite.note,
+            needToDelete: false
         )
     }
     func map(_ favorites: [FavoriteStation]) -> [FavoriteStationUIModel] {
