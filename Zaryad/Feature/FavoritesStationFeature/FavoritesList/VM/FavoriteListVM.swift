@@ -17,7 +17,6 @@ final class FavoriteListVM: PFavoriteListVM {
         self.state = .loading
         self.repo = repo
         self.domainStationsById = [:]
-        self.state = .loading
         subscribeToEvents()
         loadStations()
     }
@@ -31,6 +30,7 @@ final class FavoriteListVM: PFavoriteListVM {
                 guard let domain = domainStationsById[station.id] else { return }
                 markAsDelete(for: station, needToDelete: true)
                 try await repo.removeFavorite(station: domain)
+                loadStations()
             } catch {
                 markAsDelete(for: station, needToDelete: false)
             }
@@ -44,6 +44,7 @@ final class FavoriteListVM: PFavoriteListVM {
     func addDemoStation() {
         Task { @MainActor in
             try? await repo.createFavorite(station: Self.makeDemoFavorite())
+            loadStations()
         }
     }
     private func loadStations(forced: Bool = false) {

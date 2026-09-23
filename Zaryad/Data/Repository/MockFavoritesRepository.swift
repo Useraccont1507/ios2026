@@ -26,13 +26,11 @@ final class MockFavoritesRepository: PFavoritesRepository, Sendable {
     func createFavorite(station: FavoriteStation) async throws {
         try await Task.sleep(for: .seconds(0.2))
         favorites.append(station)
-        notify()
     }
 
     func removeFavorite(station: FavoriteStation) async throws {
         try await Task.sleep(for: .seconds(0.4))
         favorites.removeAll { $0.station.id == station.station.id }
-        notify()
     }
 
     func observeEvents(_ handler: @escaping @MainActor @Sendable (FavoritesStationEvent) -> Void) {
