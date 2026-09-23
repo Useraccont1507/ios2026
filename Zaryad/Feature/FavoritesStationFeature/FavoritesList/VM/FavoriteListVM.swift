@@ -48,6 +48,7 @@ final class FavoriteListVM: PFavoriteListVM {
     }
     private func apply(result: [FavoriteStation]) {
         state = .list(stations: FavoriteStationUIMapper().map(result))
+        domainStationsById = [:]
         result.forEach {
             domainStationsById[$0.station.id] = $0
         }
