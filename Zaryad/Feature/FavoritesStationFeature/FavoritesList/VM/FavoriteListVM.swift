@@ -17,9 +17,11 @@ final class FavoriteListVM: PFavoriteListVM {
         self.state = .loading
         self.repo = repo
         self.domainStationsById = [:]
+        self.state = .loading
         loadStations()
     }
     func refreshStations() async {
+        state = .loading
         loadStations(forced: true)
     }
     func remove(station: FavoriteStationUIModel) {
@@ -38,7 +40,6 @@ final class FavoriteListVM: PFavoriteListVM {
     private func loadStations(forced: Bool = false) {
         Task { @MainActor in
             do {
-                self.state = .loading
                 let result = try await repo.loadFavorites(forced: forced)
                 apply(result: result)
             } catch {
@@ -47,7 +48,7 @@ final class FavoriteListVM: PFavoriteListVM {
         }
     }
     private func apply(result: [FavoriteStation]) {
-        state = .list(stations: FavoriteStationUIMapper().map(result))
+        state = result.isEmpty ? .empty : .list(stations: FavoriteStationUIMapper().map(result))
         domainStationsById = [:]
         result.forEach {
             domainStationsById[$0.station.id] = $0
@@ -64,7 +65,7 @@ final class FavoriteListVM: PFavoriteListVM {
                 connectorsText: $0.connectorsText,
                 rate: $0.rate,
                 note: $0.note,
-                needToDelete: true
+                needToDelete: needToDelete
             )
         }
         self.state = .list(stations: modifiedStations)
