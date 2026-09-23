@@ -17,18 +17,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         // TODO: - remove this temporary decision
-        //window.rootViewController =
-        struct TestableView: View {
-            var body: some View {
-                Text("TEst")
-                    .padding(20)
-                    .background(
-                        Rectangle()
-                            .fill(Color.green)
-                    )
-            }
-        }
-        let testableVC = UIHostingController(rootView: TestableView())
+        let mockRepo = MockFavoritesRepository()
+        let vm = FavoriteListVM(repo: mockRepo)
+        let view = FavoritesListView(vm: vm)
+        let testableVC = UIHostingController(rootView: view)
         window.rootViewController = testableVC
         window.makeKeyAndVisible()
         self.window = window
