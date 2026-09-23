@@ -9,7 +9,7 @@ import Foundation
 
 /// TEMP / DEMO: in-memory репозиторій обраного.
 /// Заміниться реальним (Firebase Realtime DB) на етапі мережі (лаб 4).
-final class MockFavoritesRepository: PFavoritesRepository, @unchecked Sendable {
+final class MockFavoritesRepository: PFavoritesRepository, Sendable {
 
     private var favorites: [FavoriteStation]
     private var handlers: [@MainActor @Sendable (FavoritesStationEvent) -> Void] = []
@@ -35,9 +35,8 @@ final class MockFavoritesRepository: PFavoritesRepository, @unchecked Sendable {
         notify()
     }
 
-    func observeEvents(_ handler: @escaping @MainActor @Sendable (FavoritesStationEvent) -> Void) -> FavoritesEventSubscription {
+    func observeEvents(_ handler: @escaping @MainActor @Sendable (FavoritesStationEvent) -> Void) {
         handlers.append(handler)
-        return FavoritesEventSubscription()
     }
 
     private func notify() {
