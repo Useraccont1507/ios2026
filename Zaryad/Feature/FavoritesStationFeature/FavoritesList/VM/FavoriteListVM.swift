@@ -12,12 +12,14 @@ final class FavoriteListVM: PFavoriteListVM {
     @Published var state: FavoriteListViewState
     private var domainStationsById: [Int: FavoriteStation]
     private let repo: PFavoritesRepository
+    private var repoSubscription: FavoritesEventSubscription?
     
     init(repo: PFavoritesRepository) {
         self.state = .loading
         self.repo = repo
         self.domainStationsById = [:]
         self.state = .loading
+        subscribeToEvents()
         loadStations()
     }
     func refreshStations() async {
@@ -69,5 +71,16 @@ final class FavoriteListVM: PFavoriteListVM {
             )
         }
         self.state = .list(stations: modifiedStations)
+    }
+    private func subscribeToEvents() {
+        let subscription = repo.observeEvents { [weak self] event in
+            guard let self else { return }
+            switch event {
+            case .needUpdate:
+                state = .loading
+                loadStations()
+            }
+        }
+        self.repoSubscription = subscription
     }
 }
