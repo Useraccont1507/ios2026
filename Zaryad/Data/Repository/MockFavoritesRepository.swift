@@ -7,23 +7,44 @@
 
 import Foundation
 
-struct MockFavoritesRepository: PFavoritesRepository {
+/// TEMP / DEMO: in-memory репозиторій обраного.
+/// Заміниться реальним (Firebase Realtime DB) на етапі мережі (лаб 4).
+final class MockFavoritesRepository: PFavoritesRepository, @unchecked Sendable {
+
+    private var favorites: [FavoriteStation]
+    private var handlers: [@MainActor @Sendable (FavoritesStationEvent) -> Void] = []
+
+    init(favorites: [FavoriteStation] = MockFavoritesRepository.mockFavorites) {
+        self.favorites = favorites
+    }
 
     func loadFavorites(forced: Bool) async throws -> [FavoriteStation] {
-        try await Task.sleep(for: .seconds(0.6))
-        return Self.mockFavorites
+        try await Task.sleep(for: .seconds(0.4))   // імітація мережі
+        return favorites
     }
 
     func createFavorite(station: FavoriteStation) async throws {
-        try await Task.sleep(for: .seconds(0.3))
+        try await Task.sleep(for: .seconds(0.2))
+        favorites.append(station)
+        notify()
     }
 
     func removeFavorite(station: FavoriteStation) async throws {
-        try await Task.sleep(for: .seconds(0.5))
+        try await Task.sleep(for: .seconds(0.4))
+        favorites.removeAll { $0.station.id == station.station.id }
+        notify()
     }
 
     func observeEvents(_ handler: @escaping @MainActor @Sendable (FavoritesStationEvent) -> Void) -> FavoritesEventSubscription {
-        FavoritesEventSubscription()
+        handlers.append(handler)
+        return FavoritesEventSubscription()
+    }
+
+    private func notify() {
+        let handlers = self.handlers
+        Task { @MainActor in
+            handlers.forEach { $0(.needUpdate) }
+        }
     }
 }
 

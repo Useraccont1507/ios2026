@@ -9,11 +9,31 @@ import SwiftUI
 
 struct FavoritesListView<VM: PFavoriteListVM>: View {
     @ObservedObject var vm: VM
+    // TEMP DEMO — прибрати, коли додавання переїде на MapView
+    @State private var showAddDemoAlert = false
     var body: some View {
         NavigationStack {
             content
                 .navigationTitle("Обране")
                 .navigationBarTitleDisplayMode(.large)
+                .toolbar { addDemoToolbarItem }   // TEMP DEMO
+                .alert("Демонстраційне додавання", isPresented: $showAddDemoAlert) {
+                    Button("Скасувати", role: .cancel) {}
+                    Button("Додати") { vm.addDemoStation() }
+                } message: {
+                    Text("Це тимчасова дія для демонстрації сценарію. Згодом станції додаватимуться з карти (MapView). Додати демо-станцію в обране?")
+                }
+        }
+    }
+    // TEMP DEMO — кнопка-заглушка додавання (справжнє додавання буде з MapView)
+    private var addDemoToolbarItem: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button {
+                showAddDemoAlert = true
+            } label: {
+                Image(systemName: "plus")
+            }
+            .accessibilityLabel("Додати демо-станцію")
         }
     }
     @ViewBuilder

@@ -32,7 +32,6 @@ final class FavoriteListVM: PFavoriteListVM {
                 guard let domain = domainStationsById[station.id] else { return }
                 markAsDelete(for: station, needToDelete: true)
                 try await repo.removeFavorite(station: domain)
-                loadStations()
             } catch {
                 markAsDelete(for: station, needToDelete: false)
             }
@@ -40,6 +39,13 @@ final class FavoriteListVM: PFavoriteListVM {
     }
     func didTap(station: FavoriteStationUIModel) {
         // TODO: - navigation
+    }
+
+    // MARK: - TEMP DEMO — прибрати, коли додавання переїде на MapView
+    func addDemoStation() {
+        Task { @MainActor in
+            try? await repo.createFavorite(station: Self.makeDemoFavorite())
+        }
     }
     private func loadStations(forced: Bool = false) {
         Task { @MainActor in
@@ -85,5 +91,29 @@ final class FavoriteListVM: PFavoriteListVM {
             }
         }
         self.repoSubscription = subscription
+    }
+}
+
+extension FavoriteListVM {
+    private static func makeDemoFavorite() -> FavoriteStation {
+        let names = ["Nova Charge", "PowerUp", "VoltHub", "GreenPlug"]
+        let powers = [22, 60, 120, 180]
+        let i = Int.random(in: 0..<names.count)
+        let station = ChargingStation(
+            id: Int.random(in: 1000...9999),
+            uuid: nil,
+            addressInfo: .init(title: names[i], addressLine1: "вул. Демо, \(Int.random(in: 1...99))",
+                               town: "Київ", postcode: nil, country: nil,
+                               latitude: 50.45, longitude: 30.52, contactTelephone1: nil,
+                               distance: nil, distanceUnit: nil),
+            operatorInfo: .init(id: nil, title: names[i], websiteURL: nil),
+            usageType: nil,
+            statusType: .init(id: nil, title: "Operational", isOperational: true),
+            connections: [.init(id: nil,
+                                connectionType: .init(id: 25, title: "Type 2", formalName: nil),
+                                currentType: nil, level: nil, powerKW: powers.randomElement(),
+                                quantity: 1, amps: nil, voltage: nil)],
+            numberOfPoints: nil, generalComments: nil, dateLastVerified: nil)
+        return FavoriteStation(station: station, rate: Int.random(in: 3...5), note: nil)
     }
 }
