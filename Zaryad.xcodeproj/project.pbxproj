@@ -14,7 +14,7 @@
 		F4161A183062FDC5006EB08C /* Exceptions for "Zaryad" folder in "Zaryad" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				App/Info.plist,
 			);
 			target = F4161A053062FDC4006EB08C /* Zaryad */;
 		};
