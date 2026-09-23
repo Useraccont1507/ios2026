@@ -12,6 +12,7 @@ struct FavoriteStationUIModel: Identifiable, Equatable {
     let name: String
     let address: String
     let power: PowerTier
+    let powerKW: Int?
     let connectorsText: String
     let rate: Int
     let note: String?

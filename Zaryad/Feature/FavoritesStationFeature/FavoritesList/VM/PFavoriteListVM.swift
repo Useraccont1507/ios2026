@@ -12,4 +12,5 @@ protocol PFavoriteListVM: ObservableObject {
     
     @Sendable func refreshStations() async
     func remove(station: FavoriteStationUIModel)
+    func didTap(station: FavoriteStationUIModel)
 }

@@ -23,7 +23,6 @@ final class FavoriteListVM: PFavoriteListVM {
         loadStations()
     }
     func refreshStations() async {
-        state = .loading
         loadStations(forced: true)
     }
     func remove(station: FavoriteStationUIModel) {
@@ -38,6 +37,9 @@ final class FavoriteListVM: PFavoriteListVM {
                 markAsDelete(for: station, needToDelete: false)
             }
         }
+    }
+    func didTap(station: FavoriteStationUIModel) {
+        // TODO: - navigation
     }
     private func loadStations(forced: Bool = false) {
         Task { @MainActor in
@@ -64,6 +66,7 @@ final class FavoriteListVM: PFavoriteListVM {
                 name: $0.name,
                 address: $0.address,
                 power: $0.power,
+                powerKW: $0.powerKW,
                 connectorsText: $0.connectorsText,
                 rate: $0.rate,
                 note: $0.note,

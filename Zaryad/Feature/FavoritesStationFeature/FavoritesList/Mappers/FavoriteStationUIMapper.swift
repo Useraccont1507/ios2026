@@ -27,6 +27,7 @@ struct FavoriteStationUIMapper {
             name: station.addressInfo?.title ?? "Без назви",
             address: address,
             power: PowerTier(kW: maxPowerKW),
+            powerKW: maxPowerKW,
             connectorsText: connectors.joined(separator: ", "),
             rate: favorite.rate,
             note: favorite.note,

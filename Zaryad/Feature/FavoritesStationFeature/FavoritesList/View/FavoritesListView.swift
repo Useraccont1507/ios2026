@@ -9,13 +9,13 @@ import SwiftUI
 
 struct FavoritesListView<VM: PFavoriteListVM>: View {
     @ObservedObject var vm: VM
-
     var body: some View {
-        content
-            .navigationTitle("Обране")
-            .navigationBarTitleDisplayMode(.large)
+        NavigationStack {
+            content
+                .navigationTitle("Обране")
+                .navigationBarTitleDisplayMode(.large)
+        }
     }
-
     @ViewBuilder
     private var content: some View {
         switch vm.state {
@@ -25,14 +25,10 @@ struct FavoritesListView<VM: PFavoriteListVM>: View {
         case .list(let stations): list(with: stations)
         }
     }
-
-    // MARK: - States
-
     private var loadingState: some View {
         ProgressView("Завантаження…")
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
-
     private var emptyState: some View {
         ContentUnavailableView(
             "Немає обраного",
@@ -40,7 +36,6 @@ struct FavoritesListView<VM: PFavoriteListVM>: View {
             description: Text("Додавайте станції в обране, щоб швидко повертатись до них.")
         )
     }
-
     private var errorState: some View {
         ContentUnavailableView {
             Label("Не вдалося завантажити", systemImage: "exclamationmark.triangle")
@@ -53,23 +48,32 @@ struct FavoritesListView<VM: PFavoriteListVM>: View {
             .buttonStyle(.borderedProminent)
         }
     }
-
     private func list(with items: [FavoriteStationUIModel]) -> some View {
         List(items) { item in
-            FavoriteStationCell(item: item) {
-                vm.remove(station: item)
-            }
+            FavoriteStationCell(item: item)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    guard !item.needToDelete else { return }
+                    vm.didTap(station: item)
+                }
+                .opacity(item.needToDelete ? 0.5 : 1)
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    if !item.needToDelete {
+                        Button(role: .destructive) {
+                            vm.remove(station: item)
+                        } label: {
+                            Label("Видалити", systemImage: "trash")
+                        }
+                    }
+                }
         }
         .listStyle(.insetGrouped)
         .refreshable { await vm.refreshStations() }
     }
 }
 
-// MARK: - Cell
-
 private struct FavoriteStationCell: View {
     let item: FavoriteStationUIModel
-    let onDelete: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
@@ -98,24 +102,34 @@ private struct FavoriteStationCell: View {
 
             Spacer(minLength: 8)
 
-            trailing
+            if item.needToDelete {
+                ProgressView().tint(.secondary)
+            } else {
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.tertiary)
+            }
         }
         .padding(.vertical, 4)
-        .opacity(item.needToDelete ? 0.5 : 1)
         .animation(.default, value: item.needToDelete)
     }
-
-    // MARK: Subviews
-
     private var powerBadge: some View {
-        Image(systemName: "bolt.fill")
-            .font(.system(size: 17, weight: .semibold))
-            .foregroundStyle(.white)
-            .frame(width: 44, height: 44)
-            .background(Color(uiColor: item.power.color), in: Circle())
-            .accessibilityLabel("Потужність: \(item.power.title)")
+        VStack(spacing: 0) {
+            Text(item.powerKW.map(String.init) ?? "—")
+                .font(.system(size: 15, weight: .bold))
+            Text("кВт")
+                .font(.system(size: 9, weight: .semibold))
+                .opacity(0.9)
+        }
+        .foregroundStyle(badgeTextColor)
+        .frame(width: 46, height: 46)
+        .background(Color(uiColor: item.power.color), in: Circle())
+        .accessibilityElement()
+        .accessibilityLabel("\(item.powerKW.map { "\($0) кіловат" } ?? "потужність невідома"), \(item.power.title)")
     }
-
+    private var badgeTextColor: Color {
+        item.power == .fast ? .black.opacity(0.85) : .white
+    }
     private var stars: some View {
         HStack(spacing: 2) {
             ForEach(1...5, id: \.self) { index in
@@ -125,23 +139,5 @@ private struct FavoriteStationCell: View {
             }
         }
         .accessibilityLabel("Оцінка \(item.rate) з 5")
-    }
-
-    @ViewBuilder
-    private var trailing: some View {
-        if item.needToDelete {
-            ProgressView()
-                .tint(.secondary)
-                .frame(width: 28, height: 28)
-        } else {
-            Button(role: .destructive, action: onDelete) {
-                Image(systemName: "trash")
-                    .font(.system(size: 16, weight: .semibold))
-            }
-            .buttonStyle(.borderless)
-            .tint(.red)
-            .frame(width: 28, height: 28)
-            .accessibilityLabel("Видалити з обраного")
-        }
     }
 }
