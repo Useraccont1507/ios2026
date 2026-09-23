@@ -70,22 +70,15 @@ struct FavoritesListView<VM: PFavoriteListVM>: View {
     }
 
     private func row(_ item: FavoriteStationUIModel) -> some View {
-        FavoriteStationCell(item: item)
-            .contentShape(Rectangle())
-            .onTapGesture {
-                guard !item.needToDelete else { return }
-                vm.didTap(station: item)
-            }
-            .opacity(item.needToDelete ? 0.5 : 1)
-            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                if !item.needToDelete {
-                    Button(role: .destructive) {
-                        vm.remove(station: item)
-                    } label: {
-                        Label("Видалити", systemImage: "trash")
-                    }
-                }
-            }
+        FavoriteStationCell(item: item) {
+            vm.remove(station: item)
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            guard !item.needToDelete else { return }
+            vm.didTap(station: item)
+        }
+        .opacity(item.needToDelete ? 0.5 : 1)
     }
 
     private var stateKey: Int {
@@ -112,6 +105,7 @@ struct FavoritesListView<VM: PFavoriteListVM>: View {
 
 private struct FavoriteStationCell: View {
     let item: FavoriteStationUIModel
+    let onDelete: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
@@ -140,16 +134,30 @@ private struct FavoriteStationCell: View {
 
             Spacer(minLength: 8)
 
-            if item.needToDelete {
-                ProgressView().tint(.secondary)
-            } else {
+            trailing
+        }
+        .padding(.vertical, 4)
+        .animation(.default, value: item.needToDelete)
+    }
+    @ViewBuilder
+    private var trailing: some View {
+        if item.needToDelete {
+            ProgressView().tint(.secondary)
+        } else {
+            HStack(spacing: 14) {
+                Button(role: .destructive, action: onDelete) {
+                    Image(systemName: "trash")
+                        .font(.system(size: 16, weight: .semibold))
+                }
+                .buttonStyle(.borderless)
+                .tint(.red)
+                .accessibilityLabel("Видалити з обраного")
+
                 Image(systemName: "chevron.right")
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(.tertiary)
             }
         }
-        .padding(.vertical, 4)
-        .animation(.default, value: item.needToDelete)
     }
     private var powerBadge: some View {
         VStack(spacing: 0) {

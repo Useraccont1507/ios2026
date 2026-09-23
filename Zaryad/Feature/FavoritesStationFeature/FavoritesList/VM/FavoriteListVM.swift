@@ -37,6 +37,7 @@ final class FavoriteListVM: PFavoriteListVM {
         }
     }
     func didTap(station: FavoriteStationUIModel) {
+        guard !station.needToDelete else { return }
         // TODO: - navigation
     }
 
