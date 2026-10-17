@@ -11,7 +11,15 @@ final class TabBarCoordinator: Coordinator {
     private let tabBarController = UITabBarController()
     // TODO: - real repositories (лаб 4)
     private let stationsRepository: PStationsRepository = MockStationsRepository()
-    private let favoritesRepository: PFavoritesRepository = MockFavoritesRepository()
+    private let authRepository: PAuthRepository
+    private let favoritesRepository: PFavoritesRepository
+
+    override init(navigating: UINavigationController) {
+        let authRepository = MockAuthRepository()
+        self.authRepository = authRepository
+        self.favoritesRepository = MockFavoritesRepository(authRepo: authRepository)
+        super.init(navigating: navigating)
+    }
 
     override func start() {
         let controllers = Tab.allCases.map(makeFlow)
@@ -28,16 +36,28 @@ final class TabBarCoordinator: Coordinator {
             MapCoordinator(
                 navigating: navigation,
                 stationsRepository: stationsRepository,
-                favoritesRepository: favoritesRepository
+                favoritesRepository: favoritesRepository,
+                authRepository: authRepository,
+                profileProvider: self
             )
             .storeAndStart(in: self)
         case .favorites:
             FavoritesCoordinator(
                 navigating: navigation,
                 favoritesRepository: favoritesRepository,
-                mapProvider: self
+                authRepository: authRepository,
+                mapProvider: self,
+                profileProvider: self
             )
             .storeAndStart(in: self)
+        case .profile:
+            let coordinator = ProfileCoordinator(
+                navigating: navigation,
+                authRepository: authRepository,
+                favoritesRepository: favoritesRepository
+            )
+            coordinator.delegate = self
+            coordinator.storeAndStart(in: self)
         }
         return navigation
     }
@@ -45,6 +65,10 @@ final class TabBarCoordinator: Coordinator {
     private func select(_ tab: Tab) {
         guard let index = Tab.allCases.firstIndex(of: tab) else { return }
         tabBarController.selectedIndex = index
+    }
+
+    private func child<T: Coordinator>(_ type: T.Type) -> T? {
+        childCoordinators.first { $0 is T } as? T
     }
 }
 
@@ -57,10 +81,26 @@ extension TabBarCoordinator: PMapProvider {
     }
 }
 
+// MARK: - PProfileProvider
+extension TabBarCoordinator: PProfileProvider {
+    func showProfile() {
+        child(ProfileCoordinator.self)?.showRoot()
+        select(.profile)
+    }
+}
+
+// MARK: - PProfileCoordinatorDelegate
+extension TabBarCoordinator: PProfileCoordinatorDelegate {
+    func profileCoordinatorDidSignOut(_ coordinator: ProfileCoordinator) {
+        child(FavoritesCoordinator.self)?.clearFavorites()
+    }
+}
+
 extension TabBarCoordinator {
     enum Tab: CaseIterable {
         case map
         case favorites
+        case profile
 
         var tabBarItem: UITabBarItem {
             switch self {
@@ -75,6 +115,12 @@ extension TabBarCoordinator {
                     title: "Обране",
                     image: UIImage(systemName: "star"),
                     selectedImage: UIImage(systemName: "star.fill")
+                )
+            case .profile:
+                UITabBarItem(
+                    title: "Профіль",
+                    image: UIImage(systemName: "person.crop.circle"),
+                    selectedImage: UIImage(systemName: "person.crop.circle.fill")
                 )
             }
         }

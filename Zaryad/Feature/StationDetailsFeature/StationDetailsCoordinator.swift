@@ -11,16 +11,20 @@ final class StationDetailsCoordinator: Coordinator {
     private let assembly: StationDetailsAssembly
     private let station: ChargingStation
     private weak var mapProvider: PMapProvider?
+    private weak var profileProvider: PProfileProvider?
 
     init(
         navigating: UINavigationController,
         favoritesRepository: PFavoritesRepository,
+        authRepository: PAuthRepository,
         station: ChargingStation,
-        mapProvider: PMapProvider?
+        mapProvider: PMapProvider?,
+        profileProvider: PProfileProvider?
     ) {
-        self.assembly = StationDetailsAssembly(favoritesRepo: favoritesRepository)
+        self.assembly = StationDetailsAssembly(favoritesRepo: favoritesRepository, authRepo: authRepository)
         self.station = station
         self.mapProvider = mapProvider
+        self.profileProvider = profileProvider
         super.init(navigating: navigating)
     }
 
@@ -33,6 +37,9 @@ final class StationDetailsCoordinator: Coordinator {
             station: station,
             onShowOnMap: { [weak self] station in
                 self?.showOnMap(station)
+            },
+            onAuthRequired: { [weak self] in
+                self?.profileProvider?.showProfile()
             },
             onClose: { [weak self] in
                 self?.free()

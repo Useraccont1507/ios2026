@@ -8,37 +8,69 @@
 import Foundation
 
 /// TEMP / DEMO: in-memory репозиторій обраного.
-/// Заміниться реальним (Firebase Realtime DB) на етапі мережі (лаб 4).
+/// Заміниться реальним (Firebase Realtime DB, шлях `favorites/{uid}`) на етапі мережі (лаб 4).
+/// Обране прив'язане до акаунта: гість бачить порожній список, після входу — обране цього користувача.
 final class MockFavoritesRepository: PFavoritesRepository, Sendable {
 
-    private var favorites: [FavoriteStation]
+    /// Імітація хмари: обране кожного користувача за його `uid`.
+    private var favoritesByUser: [String: [FavoriteStation]]
     private var handlers: [@MainActor @Sendable (FavoritesStationEvent) -> Void] = []
+    private let authRepo: PAuthRepository
 
-    init(favorites: [FavoriteStation] = MockFavoritesRepository.mockFavorites) {
-        self.favorites = favorites
+    init(
+        authRepo: PAuthRepository,
+        favoritesByUser: [String: [FavoriteStation]] = [MockAuthRepository.demoUserId: MockFavoritesRepository.mockFavorites]
+    ) {
+        self.authRepo = authRepo
+        self.favoritesByUser = favoritesByUser
+        subscribeToSession()
     }
 
     func loadFavorites(forced: Bool) async throws -> [FavoriteStation] {
         try await Task.sleep(for: .seconds(0.4))
-        return favorites
+        guard let uid = currentUserId else { return [] }
+        return favoritesByUser[uid] ?? []
     }
 
     func createFavorite(station: FavoriteStation) async throws {
+        guard let uid = currentUserId else { throw AuthError.unauthorized }
         try await Task.sleep(for: .seconds(0.2))
-        favorites.append(station)
+        favoritesByUser[uid, default: []].append(station)
         notify()
     }
 
     func removeFavorite(station: FavoriteStation) async throws {
+        guard let uid = currentUserId else { throw AuthError.unauthorized }
         try await Task.sleep(for: .seconds(0.4))
-        if let index = favorites.firstIndex(where: { $0.station.id == station.station.id }) {
-            favorites.remove(at: index)
+        if let index = favoritesByUser[uid]?.firstIndex(where: { $0.station.id == station.station.id }) {
+            favoritesByUser[uid]?.remove(at: index)
             notify()
         }
     }
 
+    /// У моку локального кешу немає — дані акаунта лишаються в «хмарі»,
+    /// тож тут лише просимо підписників перечитати (гість отримає порожній список).
+    func clearLocal() async throws {
+        notify()
+    }
+
     func observeEvents(_ handler: @escaping @MainActor @Sendable (FavoritesStationEvent) -> Void) {
         handlers.append(handler)
+    }
+
+    private var currentUserId: String? {
+        authRepo.session.account?.id
+    }
+
+    private func subscribeToSession() {
+        authRepo.observeSession { [weak self] session in
+            switch session {
+            case .guest, .authorized:
+                self?.notify()
+            case .authenticating, .refreshingToken:
+                break
+            }
+        }
     }
 
     private func notify() {
@@ -51,7 +83,7 @@ final class MockFavoritesRepository: PFavoritesRepository, Sendable {
 
 // MARK: - Mock data
 
-private extension MockFavoritesRepository {
+extension MockFavoritesRepository {
 
     static let mockFavorites: [FavoriteStation] = [
         FavoriteStation(
@@ -80,7 +112,7 @@ private extension MockFavoritesRepository {
     ]
 
     /// Компактна фабрика станції для моків.
-    static func station(
+    private static func station(
         id: Int, name: String, address: String,
         lat: Double, lon: Double, powerKW: Int,
         connector: (id: Int, title: String), operatorName: String, isOperational: Bool

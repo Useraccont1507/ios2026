@@ -59,7 +59,7 @@ flowchart LR
 |---|---|---|---|
 | **Поведінковий** | Observer | `PFavoritesRepository.observeEvents`, `FavoritesStationEvent` | **Задача:** сповіщати VM про зовнішні зміни даних. **Учасники:** видавець — репозиторій, підписник — VM. **Місце:** `subscribeToEvents()` у `FavoriteListVM`. |
 | **Структурний** | Adapter | `FavoriteStationUIMapper` | **Задача:** привести доменну `FavoriteStation` до формату UI. **Учасники:** адаптований тип — домен, цільовий — `FavoriteStationUIModel`, адаптер — мапер. **Місце:** `apply(result:)` у VM. |
-| **Породжувальний** | Factory Method | `MockFavoritesRepository.station(...)`, демо-фабрика | **Задача:** інкапсулювати складне створення `ChargingStation` з вкладених типів. **Учасники:** фабричний метод + продукт `ChargingStation`. **Місце:** мокові дані / демо-додавання. |
+| **Породжувальний** | Factory Method | `MockFavoritesRepository.station(...)`, `MockStationsRepository.station(...)` | **Задача:** інкапсулювати складне створення `ChargingStation` з вкладених типів. **Учасники:** фабричний метод + продукт `ChargingStation`. **Місце:** мокові дані репозиторіїв. |
 
 > Породжувальний патерн буде посилено **Assembler/DIContainer** із появою координатора (наступний етап) — це «composition root», що збирає граф залежностей.
 

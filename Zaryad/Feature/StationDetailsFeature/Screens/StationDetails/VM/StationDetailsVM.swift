@@ -15,14 +15,17 @@ final class StationDetailsVM: PStationDetailsVM {
     @Published var isRatingPopupPresented: Bool
 
     var onShowOnMap: ((ChargingStation) -> Void)?
+    var onAuthRequired: (() -> Void)?
 
     private let station: ChargingStation
     private let favoritesRepo: PFavoritesRepository
+    private let authRepo: PAuthRepository
     private var favorite: FavoriteStation?
 
-    init(station: ChargingStation, favoritesRepo: PFavoritesRepository) {
+    init(station: ChargingStation, favoritesRepo: PFavoritesRepository, authRepo: PAuthRepository) {
         self.station = station
         self.favoritesRepo = favoritesRepo
+        self.authRepo = authRepo
         self.details = StationDetailsUIMapper().map(station)
         self.favoriteState = .loading
         self.isFavoriteProcessing = false
@@ -36,6 +39,11 @@ final class StationDetailsVM: PStationDetailsVM {
         case .loading:
             return
         case .notFavorite:
+            // Обране живе в акаунті — без входу додати не можна.
+            guard authRepo.session.account != nil else {
+                onAuthRequired?()
+                return
+            }
             isRatingPopupPresented = true
         case .favorite:
             removeFromFavorites()
