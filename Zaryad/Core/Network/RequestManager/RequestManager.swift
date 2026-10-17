@@ -46,7 +46,7 @@ final class RequestManager: PRequestManager {
         } catch {
             let networkError = Self.networkError(from: error)
             if endpoint.isNeedShowToast && !networkError.isCancelled {
-                toastPresenter.show(.error(networkError.toastMessage))
+                toastPresenter.show(networkError.toastMessage)
             }
             throw networkError
         }
