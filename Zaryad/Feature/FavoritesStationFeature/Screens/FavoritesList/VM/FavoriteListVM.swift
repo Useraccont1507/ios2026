@@ -10,6 +10,7 @@ import Foundation
 
 final class FavoriteListVM: PFavoriteListVM {
     @Published var state: FavoriteListViewState
+    var onStationTap: ((ChargingStation) -> Void)?
     private var domainStationsById: [Int: FavoriteStation]
     private let repo: PFavoritesRepository
     
@@ -37,8 +38,8 @@ final class FavoriteListVM: PFavoriteListVM {
         }
     }
     func didTap(station: FavoriteStationUIModel) {
-        guard !station.needToDelete else { return }
-        // TODO: - navigation
+        guard !station.needToDelete, let domain = domainStationsById[station.stationId] else { return }
+        onStationTap?(domain.station)
     }
 
     // MARK: - TEMP DEMO — прибрати, коли додавання переїде на MapView
