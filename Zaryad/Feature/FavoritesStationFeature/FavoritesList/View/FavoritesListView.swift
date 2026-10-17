@@ -13,18 +13,16 @@ struct FavoritesListView<VM: PFavoriteListVM>: View {
     @State private var showAddDemoAlert = false
 
     var body: some View {
-        NavigationStack {
-            listContainer
-                .navigationTitle("Обране")
-                .navigationBarTitleDisplayMode(.large)
-                .toolbar { addDemoToolbarItem }   // TEMP DEMO
-                .alert("Демонстраційне додавання", isPresented: $showAddDemoAlert) {
-                    Button("Скасувати", role: .cancel) {}
-                    Button("Додати") { vm.addDemoStation() }
-                } message: {
-                    Text("Це тимчасова дія для демонстрації сценарію. Згодом станції додаватимуться з карти (MapView). Додати демо-станцію в обране?")
-                }
-        }
+        listContainer
+            .navigationTitle("Обране")
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar { addDemoToolbarItem }   // TEMP DEMO
+            .alert("Демонстраційне додавання", isPresented: $showAddDemoAlert) {
+                Button("Скасувати", role: .cancel) {}
+                Button("Додати") { vm.addDemoStation() }
+            } message: {
+                Text("Це тимчасова дія для демонстрації сценарію. Згодом станції додаватимуться з карти (MapView). Додати демо-станцію в обране?")
+            }
     }
 
     private var listContainer: some View {

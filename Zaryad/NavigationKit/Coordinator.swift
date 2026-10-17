@@ -16,7 +16,7 @@ class Coordinator {
     
     init(navigating: UINavigationController) {
         self.navigating = navigating
-        self.sourceVC = navigating.navigationController?.viewControllers.last
+        self.sourceVC = navigating.viewControllers.last
     }
     
     func start() {}
@@ -39,6 +39,6 @@ extension Coordinator {
         self.parentCoordinator?.childCoordinators.removeAll(where: {$0 === self})
     }
     func free(coordinator: Coordinator) {
-        self.childCoordinators.removeAll(where: {$0 === self})
+        self.childCoordinators.removeAll(where: {$0 === coordinator})
     }
 }
