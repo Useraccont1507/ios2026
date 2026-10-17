@@ -43,3 +43,6 @@ Dependencies/
 
 # Injection / misc
 iOSInjectionProject/
+
+# Secrets
+Config/Secrets.xcconfig

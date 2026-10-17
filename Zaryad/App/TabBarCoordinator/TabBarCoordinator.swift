@@ -9,8 +9,10 @@ import UIKit
 
 final class TabBarCoordinator: Coordinator {
     private let tabBarController = UITabBarController()
-    // TODO: - real repositories (лаб 4)
-    private let stationsRepository: PStationsRepository = MockStationsRepository()
+    // TODO: - real auth & favorites repositories (Firebase)
+    private let stationsRepository: PStationsRepository = StationsRepository(
+        requestManager: RequestManager(baseURL: OCMConfig.baseURL)
+    )
     private let authRepository: PAuthRepository
     private let favoritesRepository: PFavoritesRepository
 

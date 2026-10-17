@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		A0CF16A13062FDC5006EB08C /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		F4161A063062FDC4006EB08C /* Zaryad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zaryad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -44,8 +45,17 @@
 			isa = PBXGroup;
 			children = (
 				F4161A083062FDC4006EB08C /* Zaryad */,
+				A0CF16A23062FDC5006EB08C /* Config */,
 				F4161A073062FDC4006EB08C /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		A0CF16A23062FDC5006EB08C /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				A0CF16A13062FDC5006EB08C /* Base.xcconfig */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 		F4161A073062FDC4006EB08C /* Products */ = {
@@ -130,6 +140,7 @@
 /* Begin XCBuildConfiguration section */
 		F4161A1A3062FDC5006EB08C /* Debug configuration for PBXNativeTarget "Zaryad" */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A0CF16A13062FDC5006EB08C /* Base.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -169,6 +180,7 @@
 		};
 		F4161A1B3062FDC5006EB08C /* Release configuration for PBXNativeTarget "Zaryad" */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A0CF16A13062FDC5006EB08C /* Base.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
