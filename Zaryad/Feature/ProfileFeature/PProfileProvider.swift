@@ -7,8 +7,6 @@
 
 import Foundation
 
-/// Той, хто вміє відкрити профіль (вхід) з будь-якого місця застосунку.
-/// Реалізують `ProfileCoordinator` (всередині табу профілю) і `TabBarCoordinator` (з інших табів).
 protocol PProfileProvider: AnyObject {
     func showProfile()
 }

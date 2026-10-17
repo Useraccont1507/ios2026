@@ -8,7 +8,6 @@
 import Foundation
 
 struct StationMapper {
-    /// `nil`, якщо в POI немає ID — без нього станцію не можна ні показати, ні додати в обране.
     func map(_ dto: OCMStationDTO) -> ChargingStation? {
         guard let id = dto.id else { return nil }
         return ChargingStation(
@@ -107,7 +106,6 @@ struct StationMapper {
         )
     }
 
-    /// OCM віддає дати то з мілісекундами, то без.
     nonisolated private static func date(from string: String) -> Date? {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]

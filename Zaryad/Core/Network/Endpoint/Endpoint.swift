@@ -7,13 +7,6 @@
 
 import Foundation
 
-/// Запит, що збирається ланцюжком:
-/// ```swift
-/// Endpoint(path: "poi", method: .get)
-///     .parameter("latitude", 50.45)
-///     .parameter("maxresults", 50)
-///     .token(session.token)
-/// ```
 struct Endpoint: PEndpoint {
     let path: String
     let method: HTTPMethod
@@ -55,7 +48,6 @@ extension Endpoint {
         copy.body = .data(data)
         return copy.contentType(contentType)
     }
-    /// `nil` пропускається — зручно для необов'язкових фільтрів.
     func parameter(_ name: String, _ value: CustomStringConvertible?) -> Endpoint {
         guard let value else { return self }
         var copy = self

@@ -7,13 +7,11 @@
 
 import Foundation
 
-/// Доменні помилки автентифікації (мапляться з кодів Firebase Auth).
 enum AuthError: Error, Sendable, Equatable {
     case invalidEmail
     case weakPassword
     case invalidCredentials
     case emailAlreadyInUse
-    /// Дія потребує входу в акаунт.
     case unauthorized
     case network
     case unknown

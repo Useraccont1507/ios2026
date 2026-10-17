@@ -39,7 +39,6 @@ final class StationDetailsVM: PStationDetailsVM {
         case .loading:
             return
         case .notFavorite:
-            // Обране живе в акаунті — без входу додати не можна.
             guard authRepo.session.account != nil else {
                 onAuthRequired?()
                 return
@@ -82,7 +81,6 @@ final class StationDetailsVM: PStationDetailsVM {
                 try await action()
                 await refreshFavoriteState()
             } catch {
-                // TODO: - show error
             }
         }
     }

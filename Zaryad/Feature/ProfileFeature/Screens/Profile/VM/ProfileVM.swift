@@ -49,7 +49,6 @@ final class ProfileVM: PProfileVM {
                 try await authRepo.signOut()
                 onSignedOut?()
             } catch {
-                // TODO: - show error
             }
         }
     }

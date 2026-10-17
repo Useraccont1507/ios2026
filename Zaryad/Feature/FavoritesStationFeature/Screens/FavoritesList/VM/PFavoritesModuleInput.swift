@@ -7,8 +7,6 @@
 
 import Foundation
 
-/// Вхід модуля для координатора.
 protocol PFavoritesModuleInput: AnyObject {
-    /// Очищає локальне обране (після виходу з акаунта).
     func clear()
 }

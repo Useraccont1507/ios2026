@@ -13,18 +13,8 @@ final class FirebaseService: PFirebaseService {
     private var authListener: AuthStateDidChangeListenerHandle?
     private let observers = ObserverList<Account?>()
 
-    /// Налаштовує Firebase, якщо в бандлі є `GoogleService-Info.plist`.
-    /// - Returns: `false`, якщо конфігу немає — тоді застосунок працює на мок-репозиторіях.
-    @discardableResult
-    static func configure() -> Bool {
-        if FirebaseApp.app() != nil { return true }
-        guard Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") != nil else { return false }
+    static func configure() {
         FirebaseApp.configure()
-        return true
-    }
-
-    static var isConfigured: Bool {
-        FirebaseApp.app() != nil
     }
 
     init() {
@@ -44,8 +34,11 @@ final class FirebaseService: PFirebaseService {
         Auth.auth().currentUser.map(Self.account)
     }
 
-    var projectID: String? {
-        FirebaseApp.app()?.options.projectID
+    var projectID: String {
+        guard let projectID = FirebaseApp.app()?.options.projectID else {
+            preconditionFailure("Firebase не налаштований: немає GoogleService-Info.plist")
+        }
+        return projectID
     }
 
     func signIn(email: String, password: String) async throws -> Account {

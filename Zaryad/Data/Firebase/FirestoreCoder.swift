@@ -7,8 +7,6 @@
 
 import Foundation
 
-/// Конвертує звичайний JSON (`Codable`) у типізований формат Firestore REST
-/// (`{"fields": {"rate": {"integerValue": "5"}, ...}}`) і назад.
 enum FirestoreCoder {
     enum CoderError: Error {
         case unsupportedValue
@@ -46,7 +44,6 @@ enum FirestoreCoder {
     }
 
     // MARK: - Decode
-    /// Декодує `documents` з відповіді `GET .../collection` (порожня колекція → `[]`).
     static func decodeDocuments<T: Decodable>(_ type: T.Type, from data: Data?) throws -> [T] {
         guard let data,
               let root = try JSONSerialization.jsonObject(with: data) as? [String: Any],

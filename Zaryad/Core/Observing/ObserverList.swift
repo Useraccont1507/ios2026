@@ -7,8 +7,6 @@
 
 import Foundation
 
-/// Список підписників-кложур. Кожна прив'язана до `owner`, який тримається слабко:
-/// коли власник (VM, репозиторій) звільняється, його кложура викидається зі списку.
 final class ObserverList<Value> {
     private struct Entry {
         weak var owner: AnyObject?

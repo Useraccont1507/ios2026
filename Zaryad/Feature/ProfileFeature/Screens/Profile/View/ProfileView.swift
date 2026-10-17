@@ -11,7 +11,6 @@ struct ProfileView<VM: PProfileVM>: View {
     @ObservedObject var vm: VM
 
     var body: some View {
-        // Один List на всі стани — інакше навбар губить scroll view і large title зникає.
         List {
             switch vm.state {
             case .guest:

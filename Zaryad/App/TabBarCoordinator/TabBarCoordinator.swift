@@ -16,33 +16,15 @@ final class TabBarCoordinator: Coordinator {
     private let favoritesRepository: PFavoritesRepository
 
     override init(navigating: UINavigationController) {
-        if FirebaseService.isConfigured {
-            let service = FirebaseService()
-            let authRepository = FirebaseAuthRepository(service: service)
-            self.authRepository = authRepository
-            self.favoritesRepository = Self.makeFavoritesRepository(service: service, authRepository: authRepository)
-        } else {
-            // TODO: - прибрати, коли в проєкті з'явиться GoogleService-Info.plist
-            let authRepository = MockAuthRepository()
-            self.authRepository = authRepository
-            self.favoritesRepository = MockFavoritesRepository(authRepo: authRepository)
-        }
-        super.init(navigating: navigating)
-    }
-
-    private static func makeFavoritesRepository(
-        service: FirebaseService,
-        authRepository: PAuthRepository
-    ) -> PFavoritesRepository {
-        guard let projectID = service.projectID else {
-            assertionFailure("У GoogleService-Info.plist немає PROJECT_ID")
-            return MockFavoritesRepository(authRepo: authRepository)
-        }
-        return FirebaseFavoritesRepository(
+        let service = FirebaseService()
+        let authRepository = FirebaseAuthRepository(service: service)
+        self.authRepository = authRepository
+        self.favoritesRepository = FirebaseFavoritesRepository(
             service: service,
             authRepo: authRepository,
-            requestManager: RequestManager(baseURL: FirestoreEndpoint.baseURL(projectID: projectID))
+            requestManager: RequestManager(baseURL: FirestoreEndpoint.baseURL(projectID: service.projectID))
         )
+        super.init(navigating: navigating)
     }
 
     override func start() {

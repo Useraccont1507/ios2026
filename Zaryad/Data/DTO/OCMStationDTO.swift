@@ -7,8 +7,6 @@
 
 import Foundation
 
-/// POI з Open Charge Map (`GET /v3/poi`). З `verbose=false` порожні поля не приходять — тому все опціональне.
-/// `Encodable` — бо в такому ж форматі станція зберігається в обраному (Firebase).
 nonisolated struct OCMStationDTO: Codable, Sendable {
     let id: Int?
     let uuid: String?
@@ -139,7 +137,6 @@ extension OCMStationDTO {
         }
     }
 
-    /// Довідкові об'єкти OCM (`ConnectionType`, `CurrentType`): ID + назва.
     nonisolated struct Reference: Codable, Sendable {
         let id: Int?
         let title: String?

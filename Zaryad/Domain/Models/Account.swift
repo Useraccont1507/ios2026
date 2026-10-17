@@ -7,9 +7,7 @@
 
 import Foundation
 
-/// Акаунт користувача (Firebase Auth).
 struct Account: Sendable, Equatable {
-    /// Firebase `uid`.
     let id: String
     let email: String
     let displayName: String?

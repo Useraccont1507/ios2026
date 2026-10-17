@@ -29,7 +29,6 @@ struct ProfileUIMapper {
         )
     }
 
-    /// 1 станція, 2 станції, 5 станцій.
     private static func stationsWord(for count: Int) -> String {
         let mod10 = count % 10, mod100 = count % 100
         if mod10 == 1 && mod100 != 11 { return "станція" }

@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-/// Попап оцінки в стилі App Store: зірки в рядок (тап або свайп по них), «Скасувати» / «Надіслати».
 struct RatingPopup: View {
     var title: String = "Оцініть станцію"
     var message: String = "Торкніться зірки, щоб поставити оцінку. Станція збережеться в обраному."
@@ -110,7 +109,6 @@ struct RatingPopup: View {
         }
     }
 
-    /// Номер зірки (1…5) під точкою `x` в рядку зірок.
     private func star(at x: CGFloat) -> Int {
         let step = starWidth + starSpacing
         return min(max(Int(x / step) + 1, 1), starsCount)

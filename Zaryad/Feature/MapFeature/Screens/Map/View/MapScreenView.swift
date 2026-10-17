@@ -119,7 +119,6 @@ private extension MapScreenView {
             longitudinalMeters: focus.radius * 2000
         )
     }
-    /// Радіус видимої області в км (половина меншої сторони), обмежений 1…50 км.
     static func radius(of region: MKCoordinateRegion) -> Double {
         let kmPerDegree = 111.0
         let latKm = region.span.latitudeDelta * kmPerDegree

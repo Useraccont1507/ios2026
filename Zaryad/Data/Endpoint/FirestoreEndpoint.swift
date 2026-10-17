@@ -7,7 +7,6 @@
 
 import Foundation
 
-/// Ендпоінти Firestore REST API v1. Авторизація — ID-токеном Firebase Auth у `Authorization: Bearer`.
 struct FirestoreEndpoint {
     private init() {}
 
@@ -15,19 +14,16 @@ struct FirestoreEndpoint {
         URL(string: "https://firestore.googleapis.com/v1/projects/\(projectID)/databases/(default)/documents")!
     }
 
-    /// `GET users/{uid}/favorites` — усе обране користувача.
     static func favorites(uid: String, token: String) -> Endpoint {
         endpoint(path: favoritesPath(uid: uid), token: token)
             .parameter("pageSize", 300)
     }
 
-    /// `PATCH users/{uid}/favorites/{stationId}` — створює або перезаписує документ.
     static func putFavorite(_ body: Data, stationId: Int, uid: String, token: String) -> Endpoint {
         endpoint(path: "\(favoritesPath(uid: uid))/\(stationId)", method: .patch, token: token)
             .body(body, contentType: .json)
     }
 
-    /// `DELETE users/{uid}/favorites/{stationId}`.
     static func deleteFavorite(stationId: Int, uid: String, token: String) -> Endpoint {
         endpoint(path: "\(favoritesPath(uid: uid))/\(stationId)", method: .delete, token: token)
     }

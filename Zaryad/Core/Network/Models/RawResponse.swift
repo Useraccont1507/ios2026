@@ -10,7 +10,6 @@ import Foundation
 struct RawResponse: Sendable {
     let statusCode: Int
     let headers: [String: String]
-    /// `nil`, якщо сервер повернув порожнє тіло (наприклад, 204).
     let data: Data?
 
     var isSuccess: Bool { (200..<300).contains(statusCode) }
@@ -28,7 +27,6 @@ extension RawResponse {
 }
 
 extension JSONDecoder {
-    /// Декодер для API застосунку: дати у форматі ISO 8601 (як в Open Charge Map).
     static var zaryad: JSONDecoder {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601

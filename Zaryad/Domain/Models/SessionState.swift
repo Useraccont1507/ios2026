@@ -7,8 +7,6 @@
 
 import Foundation
 
-/// Життєвий цикл сесії (діаграма станів, рис. 4 «Архітектура ПЗ»):
-/// Гість → Автентифікація → Користувач ⇄ ОновленняТокена; вихід / помилка → Гість.
 enum SessionState: Sendable, Equatable {
     case guest
     case authenticating

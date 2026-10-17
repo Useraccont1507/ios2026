@@ -33,7 +33,6 @@ final class StationDetailsCoordinator: Coordinator {
         navigateToDetails()
     }
 
-    /// `isCancelled == true` — екран деталей закрили (назад, «На карті»); батьківський координатор звільняє дочірній.
     @discardableResult
     func onComplete(_ completeBlock: ((StationDetailsCoordinator, Bool) -> Void)?) -> Self {
         self.completeBlock = completeBlock

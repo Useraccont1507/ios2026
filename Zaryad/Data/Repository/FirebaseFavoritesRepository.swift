@@ -7,8 +7,6 @@
 
 import Foundation
 
-/// Обране у Firestore (`users/{uid}/favorites`) — по HTTP через `RequestManager`.
-/// `uid` і токен — з `FirebaseService` (SDK).
 final class FirebaseFavoritesRepository: PFavoritesRepository {
     private let service: PFirebaseService
     private let requestManager: PRequestManager
@@ -71,7 +69,6 @@ final class FirebaseFavoritesRepository: PFavoritesRepository {
         notify()
     }
 
-    /// Локального кешу немає — просимо підписників перечитати (гість отримає порожній список).
     func clearLocal() async throws {
         notify()
     }

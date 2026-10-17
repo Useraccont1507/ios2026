@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-/// `UIHostingController`, що повідомляє, коли його прибрали зі стеку (back / pop),
-/// щоб координатор міг себе звільнити.
 final class HostingController<Content: View>: UIHostingController<Content> {
     var onRemoveFromParent: (() -> Void)?
 

@@ -11,7 +11,6 @@ protocol PToastPresenter {
     func show(_ message: String)
 }
 
-/// Тост помилки поверх усього вікна застосунку; сам зникає через `showDuration`.
 final class Toast: PToastPresenter {
     static let shared = Toast()
 

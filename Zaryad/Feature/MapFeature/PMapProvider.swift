@@ -7,8 +7,6 @@
 
 import Foundation
 
-/// Той, хто вміє показати станцію на карті застосунку.
-/// Реалізують `MapCoordinator` (всередині табу карти) і `TabBarCoordinator` (з інших табів).
 protocol PMapProvider: AnyObject {
     func showStation(id: Int, at coordinate: Coordinate)
 }

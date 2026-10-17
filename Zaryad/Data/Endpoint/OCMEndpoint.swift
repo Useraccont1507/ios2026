@@ -7,11 +7,9 @@
 
 import Foundation
 
-/// Ендпоінти Open Charge Map API v3. Спільне для всіх (формат відповіді, ключ) — у `endpoint(path:method:)`.
 struct OCMEndpoint {
     private init() {}
 
-    /// `GET /poi` — станції в радіусі `radius` км від точки.
     static func poi(near coordinate: Coordinate, radius: Double, maxResults: Int = 100) -> Endpoint {
         endpoint(path: "poi")
             .parameter("latitude", coordinate.latitude)

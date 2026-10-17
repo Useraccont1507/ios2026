@@ -7,7 +7,6 @@
 
 import Foundation
 
-/// Розрізняє транспортні, HTTP- та decoding-помилки (NFR-3).
 enum NetworkError: Error {
     case invalidURL
     case encoding(Error)

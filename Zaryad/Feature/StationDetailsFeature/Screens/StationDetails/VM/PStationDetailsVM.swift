@@ -13,10 +13,8 @@ protocol PStationDetailsVM: ObservableObject {
     var isFavoriteProcessing: Bool { get }
     var isRatingPopupPresented: Bool { get set }
 
-    /// Не в обраному — показує попап з оцінкою, в обраному — видаляє.
     func favoriteButtonTapped()
     func addToFavorites(rate: Int)
-    /// Відкриває Apple Maps з маршрутом до станції.
     func openRoute()
     func showOnMap()
 }
