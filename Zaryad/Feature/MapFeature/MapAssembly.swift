@@ -11,8 +11,8 @@ import SwiftUI
 struct MapAssembly {
     private let stationsRepo: PStationsRepository
 
-    init(container: DIContainer) {
-        self.stationsRepo = container.stationsRepository
+    init(stationsRepo: PStationsRepository) {
+        self.stationsRepo = stationsRepo
     }
 
     func makeMap(

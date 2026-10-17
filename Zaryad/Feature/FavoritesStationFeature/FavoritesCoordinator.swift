@@ -8,13 +8,13 @@
 import UIKit
 
 final class FavoritesCoordinator: Coordinator {
-    private let container: DIContainer
     private let assembly: FavoritesAssembly
+    private let favoritesRepository: PFavoritesRepository
     private weak var mapProvider: PMapProvider?
 
-    init(navigating: UINavigationController, container: DIContainer, mapProvider: PMapProvider?) {
-        self.container = container
-        self.assembly = FavoritesAssembly(container: container)
+    init(navigating: UINavigationController, favoritesRepository: PFavoritesRepository, mapProvider: PMapProvider?) {
+        self.assembly = FavoritesAssembly(repo: favoritesRepository)
+        self.favoritesRepository = favoritesRepository
         self.mapProvider = mapProvider
         super.init(navigating: navigating)
     }
@@ -33,7 +33,7 @@ final class FavoritesCoordinator: Coordinator {
     private func navigateToStationDetails(_ station: ChargingStation) {
         StationDetailsCoordinator(
             navigating: navigating,
-            container: container,
+            favoritesRepository: favoritesRepository,
             station: station,
             mapProvider: mapProvider
         )

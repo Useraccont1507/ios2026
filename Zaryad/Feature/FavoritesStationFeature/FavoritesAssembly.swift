@@ -11,8 +11,8 @@ import SwiftUI
 struct FavoritesAssembly {
     private let repo: PFavoritesRepository
 
-    init(container: DIContainer) {
-        self.repo = container.favoritesRepository
+    init(repo: PFavoritesRepository) {
+        self.repo = repo
     }
 
     func makeFavoritesList(onStationTap: @escaping (ChargingStation) -> Void) -> UIViewController {

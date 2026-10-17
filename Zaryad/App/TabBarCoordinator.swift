@@ -9,12 +9,9 @@ import UIKit
 
 final class TabBarCoordinator: Coordinator {
     private let tabBarController = UITabBarController()
-    private let container: DIContainer
-
-    init(navigating: UINavigationController, container: DIContainer) {
-        self.container = container
-        super.init(navigating: navigating)
-    }
+    // TODO: - real repositories (лаб 4)
+    private let stationsRepository: PStationsRepository = MockStationsRepository()
+    private let favoritesRepository: PFavoritesRepository = MockFavoritesRepository()
 
     override func start() {
         let controllers = Tab.allCases.map(makeFlow)
@@ -28,10 +25,19 @@ final class TabBarCoordinator: Coordinator {
         navigation.tabBarItem = tab.tabBarItem
         switch tab {
         case .map:
-            MapCoordinator(navigating: navigation, container: container).storeAndStart(in: self)
+            MapCoordinator(
+                navigating: navigation,
+                stationsRepository: stationsRepository,
+                favoritesRepository: favoritesRepository
+            )
+            .storeAndStart(in: self)
         case .favorites:
-            FavoritesCoordinator(navigating: navigation, container: container, mapProvider: self)
-                .storeAndStart(in: self)
+            FavoritesCoordinator(
+                navigating: navigation,
+                favoritesRepository: favoritesRepository,
+                mapProvider: self
+            )
+            .storeAndStart(in: self)
         }
         return navigation
     }

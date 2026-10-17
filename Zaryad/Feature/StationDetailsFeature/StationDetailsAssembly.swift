@@ -11,8 +11,8 @@ import SwiftUI
 struct StationDetailsAssembly {
     private let favoritesRepo: PFavoritesRepository
 
-    init(container: DIContainer) {
-        self.favoritesRepo = container.favoritesRepository
+    init(favoritesRepo: PFavoritesRepository) {
+        self.favoritesRepo = favoritesRepo
     }
 
     func makeStationDetails(

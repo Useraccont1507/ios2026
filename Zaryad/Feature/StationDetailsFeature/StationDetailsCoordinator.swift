@@ -14,11 +14,11 @@ final class StationDetailsCoordinator: Coordinator {
 
     init(
         navigating: UINavigationController,
-        container: DIContainer,
+        favoritesRepository: PFavoritesRepository,
         station: ChargingStation,
         mapProvider: PMapProvider?
     ) {
-        self.assembly = StationDetailsAssembly(container: container)
+        self.assembly = StationDetailsAssembly(favoritesRepo: favoritesRepository)
         self.station = station
         self.mapProvider = mapProvider
         super.init(navigating: navigating)

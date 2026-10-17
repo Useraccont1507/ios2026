@@ -9,7 +9,6 @@ import UIKit
 
 final class AppCoordinator: Coordinator {
     private let window: UIWindow
-    private let container = DIContainer()
 
     init(window: UIWindow) {
         self.window = window
@@ -26,6 +25,6 @@ final class AppCoordinator: Coordinator {
 
     private func showMainFlow() {
         childCoordinators.removeAll()
-        TabBarCoordinator(navigating: navigating, container: container).storeAndStart(in: self)
+        TabBarCoordinator(navigating: navigating).storeAndStart(in: self)
     }
 }
