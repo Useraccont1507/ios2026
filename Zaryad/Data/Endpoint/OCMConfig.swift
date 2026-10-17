@@ -9,11 +9,5 @@ import Foundation
 
 enum OCMConfig {
     static let baseURL = URL(string: "https://api.openchargemap.io/v3")!
-
-    /// `OCM_API_KEY` з `Config/Secrets.xcconfig` → Info.plist (`OCMAPIKey`).
-    static var apiKey: String? {
-        guard let key = Bundle.main.object(forInfoDictionaryKey: "OCMAPIKey") as? String,
-              !key.isEmpty else { return nil }
-        return key
-    }
+    static let apiKey = "8c1397c7-d17c-4d9a-86aa-7eb1d9782f05"
 }

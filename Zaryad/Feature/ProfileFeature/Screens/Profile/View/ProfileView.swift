@@ -132,8 +132,7 @@ struct ProfileView<VM: PProfileVM>: View {
         } header: {
             Text("Хмара")
         } footer: {
-            // TEMP DEMO — прибрати, коли підключимо Firebase (лаб 4)
-            Text("Зараз акаунт і обране — демо-дані. Синхронізація запрацює разом з Firebase.")
+            Text("Обране зберігається в акаунті й синхронізується між пристроями.")
         }
 
         Section("Акаунт") {

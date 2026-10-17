@@ -43,9 +43,3 @@ Dependencies/
 
 # Injection / misc
 iOSInjectionProject/
-
-# Secrets
-Config/Secrets.xcconfig
-
-# Firebase config (API key, project IDs)
-Zaryad/App/GoogleService-Info.plist
