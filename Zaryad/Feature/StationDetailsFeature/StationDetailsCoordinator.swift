@@ -11,21 +11,36 @@ final class StationDetailsCoordinator: Coordinator {
     private let assembly: StationDetailsAssembly
     private let station: ChargingStation
     private weak var mapProvider: PMapProvider?
+    private weak var profileProvider: PProfileProvider?
+    private var completeBlock: ((StationDetailsCoordinator, Bool) -> Void)?
 
     init(
         navigating: UINavigationController,
         favoritesRepository: PFavoritesRepository,
+        authRepository: PAuthRepository,
         station: ChargingStation,
-        mapProvider: PMapProvider?
+        mapProvider: PMapProvider?,
+        profileProvider: PProfileProvider?
     ) {
-        self.assembly = StationDetailsAssembly(favoritesRepo: favoritesRepository)
+        self.assembly = StationDetailsAssembly(favoritesRepo: favoritesRepository, authRepo: authRepository)
         self.station = station
         self.mapProvider = mapProvider
+        self.profileProvider = profileProvider
         super.init(navigating: navigating)
     }
 
     override func start() {
         navigateToDetails()
+    }
+
+    @discardableResult
+    func onComplete(_ completeBlock: ((StationDetailsCoordinator, Bool) -> Void)?) -> Self {
+        self.completeBlock = completeBlock
+        return self
+    }
+
+    private func didFinish(isCancelled: Bool) {
+        completeBlock?(self, isCancelled)
     }
 
     private func navigateToDetails() {
@@ -34,8 +49,11 @@ final class StationDetailsCoordinator: Coordinator {
             onShowOnMap: { [weak self] station in
                 self?.showOnMap(station)
             },
+            onAuthRequired: { [weak self] in
+                self?.profileProvider?.showProfile()
+            },
             onClose: { [weak self] in
-                self?.free()
+                self?.didFinish(isCancelled: true)
             }
         )
         navigating.pushViewController(vc, animated: true)

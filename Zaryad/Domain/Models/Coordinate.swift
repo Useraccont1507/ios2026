@@ -15,7 +15,6 @@ struct Coordinate: Sendable, Equatable {
 extension Coordinate {
     static let kyiv = Coordinate(latitude: 50.4501, longitude: 30.5234)
 
-    /// Відстань до іншої точки в кілометрах (формула гаверсинуса).
     func distance(to other: Coordinate) -> Double {
         let earthRadiusKm = 6371.0
         let dLat = (other.latitude - latitude) * .pi / 180

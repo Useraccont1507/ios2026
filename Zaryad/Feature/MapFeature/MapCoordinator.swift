@@ -10,15 +10,22 @@ import UIKit
 final class MapCoordinator: Coordinator {
     private let assembly: MapAssembly
     private let favoritesRepository: PFavoritesRepository
+    private let authRepository: PAuthRepository
     private weak var mapInput: PMapModuleInput?
+    private weak var profileProvider: PProfileProvider?
 
     init(
         navigating: UINavigationController,
         stationsRepository: PStationsRepository,
-        favoritesRepository: PFavoritesRepository
+        locationService: PLocationService,
+        favoritesRepository: PFavoritesRepository,
+        authRepository: PAuthRepository,
+        profileProvider: PProfileProvider?
     ) {
-        self.assembly = MapAssembly(stationsRepo: stationsRepository)
+        self.assembly = MapAssembly(stationsRepo: stationsRepository, locationService: locationService)
         self.favoritesRepository = favoritesRepository
+        self.authRepository = authRepository
+        self.profileProvider = profileProvider
         super.init(navigating: navigating)
     }
 
@@ -38,9 +45,14 @@ final class MapCoordinator: Coordinator {
         StationDetailsCoordinator(
             navigating: navigating,
             favoritesRepository: favoritesRepository,
+            authRepository: authRepository,
             station: station,
-            mapProvider: self
+            mapProvider: self,
+            profileProvider: profileProvider
         )
+        .onComplete { coordinator, isCancelled in
+            if isCancelled { coordinator.free() }
+        }
         .storeAndStart(in: self)
     }
 }

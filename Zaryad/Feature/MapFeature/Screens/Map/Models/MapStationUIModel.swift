@@ -8,7 +8,6 @@
 import Foundation
 
 struct MapStationUIModel: Identifiable, Equatable {
-    /// `ChargingStation.id` — стабільний, щоб анотації на карті не перестворювались.
     let id: Int
     let name: String
     let address: String

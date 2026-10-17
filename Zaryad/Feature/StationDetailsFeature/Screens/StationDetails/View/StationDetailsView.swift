@@ -44,7 +44,6 @@ struct StationDetailsView<VM: PStationDetailsVM>: View {
             .presentationBackground(.clear)
         }
         .onChange(of: vm.isRatingPopupPresented) { _, isPresented in
-            // Без системної анімації — попап анімується сам, як алерт.
             var transaction = Transaction()
             transaction.disablesAnimations = true
             withTransaction(transaction) { isRatingPopupShown = isPresented }
