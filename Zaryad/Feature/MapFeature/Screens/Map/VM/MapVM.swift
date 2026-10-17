@@ -19,19 +19,26 @@ final class MapVM: PMapVM {
     var onOpenDetails: ((ChargingStation) -> Void)?
 
     private let repo: PStationsRepository
+    private let locationService: PLocationService
     private var domainStationsById: [Int: ChargingStation]
     private var lastQuery: (center: Coordinate, radius: Double)
     private var pendingSelectionId: Int?
     private var searchTask: Task<Void, Never>?
 
-    init(repo: PStationsRepository, center: Coordinate = .kyiv, radius: Double = MapVM.defaultRadius) {
+    init(
+        repo: PStationsRepository,
+        locationService: PLocationService,
+        fallbackCenter: Coordinate = .kyiv,
+        radius: Double = MapVM.defaultRadius
+    ) {
         self.state = .loading
         self.stations = []
-        self.focus = MapFocus(coordinate: center, radius: radius)
+        self.focus = MapFocus(coordinate: fallbackCenter, radius: radius)
         self.repo = repo
+        self.locationService = locationService
         self.domainStationsById = [:]
-        self.lastQuery = (center, radius)
-        search(near: center, radius: radius)
+        self.lastQuery = (fallbackCenter, radius)
+        startFromUserLocation(fallbackCenter: fallbackCenter, radius: radius)
     }
     func search(near: Coordinate, radius: Double) {
         searchTask?.cancel()
@@ -43,8 +50,8 @@ final class MapVM: PMapVM {
                 let result = try await repo.stations(near: near, radius: radius)
                 guard !Task.isCancelled else { return }
                 apply(result: result)
-            } catch is CancellationError {
             } catch {
+                guard !Task.isCancelled else { return }
                 state = .error
             }
         }
@@ -62,6 +69,15 @@ final class MapVM: PMapVM {
     }
     func retry() {
         search(near: lastQuery.center, radius: lastQuery.radius)
+    }
+    private func startFromUserLocation(fallbackCenter: Coordinate, radius: Double) {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let center = await locationService.currentLocation() ?? fallbackCenter
+            guard pendingSelectionId == nil else { return }
+            focus = MapFocus(coordinate: center, radius: radius)
+            search(near: center, radius: radius)
+        }
     }
     private func apply(result: [ChargingStation]) {
         stations = MapStationUIMapper().map(result)

@@ -17,11 +17,12 @@ final class MapCoordinator: Coordinator {
     init(
         navigating: UINavigationController,
         stationsRepository: PStationsRepository,
+        locationService: PLocationService,
         favoritesRepository: PFavoritesRepository,
         authRepository: PAuthRepository,
         profileProvider: PProfileProvider?
     ) {
-        self.assembly = MapAssembly(stationsRepo: stationsRepository)
+        self.assembly = MapAssembly(stationsRepo: stationsRepository, locationService: locationService)
         self.favoritesRepository = favoritesRepository
         self.authRepository = authRepository
         self.profileProvider = profileProvider

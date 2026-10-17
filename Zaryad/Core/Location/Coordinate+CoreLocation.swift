@@ -1,11 +1,11 @@
 //
-//  Coordinate+MapKit.swift
+//  Coordinate+CoreLocation.swift
 //  Zaryad
 //
 //  Created by Illia Verezei on 17.10.2026.
 //
 
-import MapKit
+import CoreLocation
 
 extension Coordinate {
     var clCoordinate: CLLocationCoordinate2D {

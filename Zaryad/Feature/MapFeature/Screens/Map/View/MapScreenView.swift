@@ -11,7 +11,6 @@ import MapKit
 struct MapScreenView<VM: PMapVM>: View {
     @ObservedObject var vm: VM
     @State private var position: MapCameraPosition
-    @State private var locationManager = CLLocationManager()
 
     init(vm: VM) {
         self.vm = vm
@@ -29,7 +28,6 @@ struct MapScreenView<VM: PMapVM>: View {
                     position = .region(Self.region(for: focus))
                 }
             }
-            .onAppear { locationManager.requestWhenInUseAuthorization() }
     }
 
     private var map: some View {

@@ -12,6 +12,7 @@ final class TabBarCoordinator: Coordinator {
     private let stationsRepository: PStationsRepository = StationsRepository(
         requestManager: RequestManager(baseURL: OCMConfig.baseURL)
     )
+    private let locationService: PLocationService = LocationService()
     private let authRepository: PAuthRepository
     private let favoritesRepository: PFavoritesRepository
 
@@ -42,6 +43,7 @@ final class TabBarCoordinator: Coordinator {
             MapCoordinator(
                 navigating: navigation,
                 stationsRepository: stationsRepository,
+                locationService: locationService,
                 favoritesRepository: favoritesRepository,
                 authRepository: authRepository,
                 profileProvider: self
