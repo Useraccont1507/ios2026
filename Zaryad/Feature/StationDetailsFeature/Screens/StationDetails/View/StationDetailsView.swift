@@ -10,6 +10,7 @@ import MapKit
 
 struct StationDetailsView<VM: PStationDetailsVM>: View {
     @ObservedObject var vm: VM
+    @State private var isRatingPopupShown = false
 
     private var details: StationDetailsUIModel { vm.details }
 
@@ -35,15 +36,18 @@ struct StationDetailsView<VM: PStationDetailsVM>: View {
         .background(Color(uiColor: .systemGroupedBackground))
         .navigationTitle(details.name)
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Оцініть станцію", isPresented: $vm.isRatingAlertPresented) {
-            ForEach([5, 4, 3, 2, 1], id: \.self) { rate in
-                Button(String(repeating: "★", count: rate) + String(repeating: "☆", count: 5 - rate)) {
-                    vm.addToFavorites(rate: rate)
-                }
-            }
-            Button("Скасувати", role: .cancel) {}
-        } message: {
-            Text("Оцінка збережеться разом зі станцією в обраному.")
+        .fullScreenCover(isPresented: $isRatingPopupShown) {
+            RatingPopup(
+                onSubmit: { vm.addToFavorites(rate: $0) },
+                onClose: { vm.isRatingPopupPresented = false }
+            )
+            .presentationBackground(.clear)
+        }
+        .onChange(of: vm.isRatingPopupPresented) { _, isPresented in
+            // Без системної анімації — попап анімується сам, як алерт.
+            var transaction = Transaction()
+            transaction.disablesAnimations = true
+            withTransaction(transaction) { isRatingPopupShown = isPresented }
         }
     }
 

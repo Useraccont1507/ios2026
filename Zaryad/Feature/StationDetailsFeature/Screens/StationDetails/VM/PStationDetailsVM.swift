@@ -11,9 +11,9 @@ protocol PStationDetailsVM: ObservableObject {
     var details: StationDetailsUIModel { get }
     var favoriteState: StationFavoriteState { get }
     var isFavoriteProcessing: Bool { get }
-    var isRatingAlertPresented: Bool { get set }
+    var isRatingPopupPresented: Bool { get set }
 
-    /// Не в обраному — показує алерт з оцінкою, в обраному — видаляє.
+    /// Не в обраному — показує попап з оцінкою, в обраному — видаляє.
     func favoriteButtonTapped()
     func addToFavorites(rate: Int)
     /// Відкриває Apple Maps з маршрутом до станції.

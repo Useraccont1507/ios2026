@@ -12,7 +12,7 @@ final class StationDetailsVM: PStationDetailsVM {
     let details: StationDetailsUIModel
     @Published private(set) var favoriteState: StationFavoriteState
     @Published private(set) var isFavoriteProcessing: Bool
-    @Published var isRatingAlertPresented: Bool
+    @Published var isRatingPopupPresented: Bool
 
     var onShowOnMap: ((ChargingStation) -> Void)?
 
@@ -26,7 +26,7 @@ final class StationDetailsVM: PStationDetailsVM {
         self.details = StationDetailsUIMapper().map(station)
         self.favoriteState = .loading
         self.isFavoriteProcessing = false
-        self.isRatingAlertPresented = false
+        self.isRatingPopupPresented = false
         subscribeToEvents()
         loadFavoriteState()
     }
@@ -36,7 +36,7 @@ final class StationDetailsVM: PStationDetailsVM {
         case .loading:
             return
         case .notFavorite:
-            isRatingAlertPresented = true
+            isRatingPopupPresented = true
         case .favorite:
             removeFromFavorites()
         }
