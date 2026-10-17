@@ -97,7 +97,7 @@ final class StationDetailsVM: PStationDetailsVM {
         favoriteState = favorite.map { .favorite(rate: $0.rate) } ?? .notFavorite
     }
     private func subscribeToEvents() {
-        favoritesRepo.observeEvents { [weak self] event in
+        favoritesRepo.observeEvents(owner: self) { [weak self] event in
             switch event {
             case .needUpdate:
                 self?.loadFavoriteState()

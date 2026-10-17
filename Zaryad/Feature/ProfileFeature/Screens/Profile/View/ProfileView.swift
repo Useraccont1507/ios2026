@@ -73,7 +73,7 @@ struct ProfileView<VM: PProfileVM>: View {
         }
 
         Section("Що дає акаунт") {
-            benefit("Обране в хмарі", subtitle: "Firebase Realtime Database", icon: "star.fill", tint: .orange)
+            benefit("Обране в хмарі", subtitle: "Firebase Firestore", icon: "star.fill", tint: .orange)
             benefit("Синхронізація", subtitle: "Ті самі станції на всіх пристроях", icon: "arrow.triangle.2.circlepath", tint: .blue)
             benefit("Нічого не загубиться", subtitle: "Оцінки й нотатки переживуть перевстановлення", icon: "lock.shield.fill", tint: .green)
         }

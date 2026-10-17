@@ -8,13 +8,13 @@
 import Foundation
 
 /// TEMP / DEMO: in-memory репозиторій обраного.
-/// Заміниться реальним (Firebase Realtime DB, шлях `favorites/{uid}`) на етапі мережі (лаб 4).
+/// Реальна реалізація — `FirebaseFavoritesRepository` (Firestore, `users/{uid}/favorites`).
 /// Обране прив'язане до акаунта: гість бачить порожній список, після входу — обране цього користувача.
 final class MockFavoritesRepository: PFavoritesRepository, Sendable {
 
     /// Імітація хмари: обране кожного користувача за його `uid`.
     private var favoritesByUser: [String: [FavoriteStation]]
-    private var handlers: [@MainActor @Sendable (FavoritesStationEvent) -> Void] = []
+    private let observers = ObserverList<FavoritesStationEvent>()
     private let authRepo: PAuthRepository
 
     init(
@@ -54,8 +54,8 @@ final class MockFavoritesRepository: PFavoritesRepository, Sendable {
         notify()
     }
 
-    func observeEvents(_ handler: @escaping @MainActor @Sendable (FavoritesStationEvent) -> Void) {
-        handlers.append(handler)
+    func observeEvents(owner: AnyObject, _ handler: @escaping @MainActor (FavoritesStationEvent) -> Void) {
+        observers.add(owner: owner, handler)
     }
 
     private var currentUserId: String? {
@@ -63,7 +63,7 @@ final class MockFavoritesRepository: PFavoritesRepository, Sendable {
     }
 
     private func subscribeToSession() {
-        authRepo.observeSession { [weak self] session in
+        authRepo.observeSession(owner: self) { [weak self] session in
             switch session {
             case .guest, .authorized:
                 self?.notify()
@@ -74,10 +74,7 @@ final class MockFavoritesRepository: PFavoritesRepository, Sendable {
     }
 
     private func notify() {
-        let handlers = self.handlers
-        Task { @MainActor in
-            handlers.forEach { $0(.needUpdate) }
-        }
+        observers.notify(.needUpdate)
     }
 }
 

@@ -56,6 +56,9 @@ final class FavoritesCoordinator: Coordinator {
             mapProvider: mapProvider,
             profileProvider: profileProvider
         )
+        .onComplete { coordinator, isCancelled in
+            if isCancelled { coordinator.free() }
+        }
         .storeAndStart(in: self)
     }
 }

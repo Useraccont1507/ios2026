@@ -49,6 +49,9 @@ final class MapCoordinator: Coordinator {
             mapProvider: self,
             profileProvider: profileProvider
         )
+        .onComplete { coordinator, isCancelled in
+            if isCancelled { coordinator.free() }
+        }
         .storeAndStart(in: self)
     }
 }

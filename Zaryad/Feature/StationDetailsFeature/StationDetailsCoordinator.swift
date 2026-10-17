@@ -12,6 +12,7 @@ final class StationDetailsCoordinator: Coordinator {
     private let station: ChargingStation
     private weak var mapProvider: PMapProvider?
     private weak var profileProvider: PProfileProvider?
+    private var completeBlock: ((StationDetailsCoordinator, Bool) -> Void)?
 
     init(
         navigating: UINavigationController,
@@ -32,6 +33,17 @@ final class StationDetailsCoordinator: Coordinator {
         navigateToDetails()
     }
 
+    /// `isCancelled == true` — екран деталей закрили (назад, «На карті»); батьківський координатор звільняє дочірній.
+    @discardableResult
+    func onComplete(_ completeBlock: ((StationDetailsCoordinator, Bool) -> Void)?) -> Self {
+        self.completeBlock = completeBlock
+        return self
+    }
+
+    private func didFinish(isCancelled: Bool) {
+        completeBlock?(self, isCancelled)
+    }
+
     private func navigateToDetails() {
         let vc = assembly.makeStationDetails(
             station: station,
@@ -42,7 +54,7 @@ final class StationDetailsCoordinator: Coordinator {
                 self?.profileProvider?.showProfile()
             },
             onClose: { [weak self] in
-                self?.free()
+                self?.didFinish(isCancelled: true)
             }
         )
         navigating.pushViewController(vc, animated: true)

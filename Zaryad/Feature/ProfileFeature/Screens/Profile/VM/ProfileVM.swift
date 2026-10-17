@@ -70,10 +70,10 @@ final class ProfileVM: PProfileVM {
         }
     }
     private func subscribeToEvents() {
-        authRepo.observeSession { [weak self] session in
+        authRepo.observeSession(owner: self) { [weak self] session in
             self?.apply(session: session)
         }
-        favoritesRepo.observeEvents { [weak self] event in
+        favoritesRepo.observeEvents(owner: self) { [weak self] event in
             switch event {
             case .needUpdate:
                 self?.loadFavoritesCount()

@@ -70,8 +70,45 @@ struct StationMapper {
         )
     }
 
+    // MARK: - Domain → DTO (для збереження в обраному)
+    func dto(from station: ChargingStation) -> OCMStationDTO {
+        OCMStationDTO(
+            id: station.id,
+            uuid: station.uuid,
+            addressInfo: station.addressInfo.map {
+                .init(
+                    title: $0.title, addressLine1: $0.addressLine1, town: $0.town, postcode: $0.postcode,
+                    country: $0.country.map { .init(isoCode: $0.isoCode, title: $0.title) },
+                    latitude: $0.latitude, longitude: $0.longitude, contactTelephone1: $0.contactTelephone1,
+                    distance: $0.distance, distanceUnit: $0.distanceUnit
+                )
+            },
+            operatorInfo: station.operatorInfo.map { .init(id: $0.id, title: $0.title, websiteURL: $0.websiteURL) },
+            usageType: station.usageType.map { .init(id: $0.id, title: $0.title, isPayAtLocation: $0.isPayAtLocation) },
+            statusType: station.statusType.map { .init(id: $0.id, title: $0.title, isOperational: $0.isOperational) },
+            connections: station.connections?.map {
+                .init(
+                    id: $0.id,
+                    connectionType: $0.connectionType.map { .init(id: $0.id, title: $0.title, formalName: $0.formalName) },
+                    currentType: $0.currentType.map { .init(id: $0.id, title: $0.title, formalName: nil) },
+                    level: $0.level.map { .init(id: $0.id, title: $0.title, isFastChargeCapable: $0.isFastChargeCapable) },
+                    powerKW: $0.powerKW.map(Double.init),
+                    quantity: $0.quantity,
+                    amps: $0.amps.map(Double.init),
+                    voltage: $0.voltage.map(Double.init)
+                )
+            },
+            numberOfPoints: station.numberOfPoints,
+            generalComments: station.generalComments,
+            dateLastVerified: station.dateLastVerified.map { ISO8601DateFormatter().string(from: $0) },
+            mediaItems: station.mediaItems?.map {
+                .init(id: $0.id, itemURL: $0.itemURL, itemThumbnailURL: $0.itemThumbnailURL, comment: $0.comment)
+            }
+        )
+    }
+
     /// OCM віддає дати то з мілісекундами, то без.
-    private static func date(from string: String) -> Date? {
+    nonisolated private static func date(from string: String) -> Date? {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         if let date = formatter.date(from: string) { return date }

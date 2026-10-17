@@ -13,5 +13,6 @@ protocol PFavoritesRepository {
     func removeFavorite(station: FavoriteStation) async throws
     /// Прибирає локальну копію обраного (хмарні дані акаунта не чіпає).
     func clearLocal() async throws
-    func observeEvents(_ handler: @escaping @MainActor (FavoritesStationEvent) -> Void)
+    /// `owner` тримається слабко: коли він звільняється, підписка зникає.
+    func observeEvents(owner: AnyObject, _ handler: @escaping @MainActor (FavoritesStationEvent) -> Void)
 }

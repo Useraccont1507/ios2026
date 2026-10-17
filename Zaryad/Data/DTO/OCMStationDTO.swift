@@ -8,7 +8,8 @@
 import Foundation
 
 /// POI з Open Charge Map (`GET /v3/poi`). З `verbose=false` порожні поля не приходять — тому все опціональне.
-struct OCMStationDTO: Decodable, Sendable {
+/// `Encodable` — бо в такому ж форматі станція зберігається в обраному (Firebase).
+nonisolated struct OCMStationDTO: Codable, Sendable {
     let id: Int?
     let uuid: String?
     let addressInfo: AddressInfo?
@@ -38,7 +39,7 @@ struct OCMStationDTO: Decodable, Sendable {
 
 // MARK: - AddressInfo
 extension OCMStationDTO {
-    struct AddressInfo: Decodable, Sendable {
+    nonisolated struct AddressInfo: Codable, Sendable {
         let title: String?
         let addressLine1: String?
         let town: String?
@@ -64,7 +65,7 @@ extension OCMStationDTO {
         }
     }
 
-    struct Country: Decodable, Sendable {
+    nonisolated struct Country: Codable, Sendable {
         let isoCode: String?
         let title: String?
 
@@ -77,7 +78,7 @@ extension OCMStationDTO {
 
 // MARK: - OperatorInfo / UsageType / StatusType
 extension OCMStationDTO {
-    struct OperatorInfo: Decodable, Sendable {
+    nonisolated struct OperatorInfo: Codable, Sendable {
         let id: Int?
         let title: String?
         let websiteURL: String?
@@ -89,7 +90,7 @@ extension OCMStationDTO {
         }
     }
 
-    struct UsageType: Decodable, Sendable {
+    nonisolated struct UsageType: Codable, Sendable {
         let id: Int?
         let title: String?
         let isPayAtLocation: Bool?
@@ -101,7 +102,7 @@ extension OCMStationDTO {
         }
     }
 
-    struct StatusType: Decodable, Sendable {
+    nonisolated struct StatusType: Codable, Sendable {
         let id: Int?
         let title: String?
         let isOperational: Bool?
@@ -116,7 +117,7 @@ extension OCMStationDTO {
 
 // MARK: - Connection
 extension OCMStationDTO {
-    struct Connection: Decodable, Sendable {
+    nonisolated struct Connection: Codable, Sendable {
         let id: Int?
         let connectionType: Reference?
         let currentType: Reference?
@@ -139,7 +140,7 @@ extension OCMStationDTO {
     }
 
     /// Довідкові об'єкти OCM (`ConnectionType`, `CurrentType`): ID + назва.
-    struct Reference: Decodable, Sendable {
+    nonisolated struct Reference: Codable, Sendable {
         let id: Int?
         let title: String?
         let formalName: String?
@@ -151,7 +152,7 @@ extension OCMStationDTO {
         }
     }
 
-    struct Level: Decodable, Sendable {
+    nonisolated struct Level: Codable, Sendable {
         let id: Int?
         let title: String?
         let isFastChargeCapable: Bool?
@@ -166,7 +167,7 @@ extension OCMStationDTO {
 
 // MARK: - MediaItem
 extension OCMStationDTO {
-    struct MediaItem: Decodable, Sendable {
+    nonisolated struct MediaItem: Codable, Sendable {
         let id: Int?
         let itemURL: String?
         let itemThumbnailURL: String?

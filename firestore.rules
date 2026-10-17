@@ -1,0 +1,143 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// This security rules file assumes the following data structures:
+//
+// Collection: users/{uid}/favorites
+// Document ID: Open Charge Map station id as a string of digits (e.g. "12345")
+// Owner: {uid} in the path — Firebase Auth uid; there is no uid field in the document.
+// Written by the iOS app via Firestore REST: PATCH (full overwrite, used for both
+// create and re-add), GET (list the whole subcollection, no filters), DELETE.
+// Fields:
+//   - station: map (required) - snapshot of the station in Open Charge Map JSON
+//       (PascalCase keys). Only the known top-level OCM keys are allowed;
+//       station.ID (int) must equal the document id.
+//         ID: int (required), UUID: string <= 64,
+//         AddressInfo / OperatorInfo / UsageType / StatusType: map (<= 20 keys),
+//         Connections: list (<= 50), MediaItems: list (<= 50),
+//         NumberOfPoints: int 0..1000, GeneralComments: string <= 5000,
+//         DateLastVerified: string <= 40 (ISO 8601)
+//   - rate: int (required, 1..5) - user's rating
+//   - note: string (optional, 1..500 chars) - user's note
+//   - addedAt: number (optional) - Unix time in seconds when the station was added;
+//       must be positive and not more than 1 hour in the future
+//
+// The parent document users/{uid} is never written by the app.
+// Everything else in the database is denied.
+//
+// Limitation: rules cannot iterate lists, so items inside station.Connections /
+// station.MediaItems and keys inside nested maps are only size-limited, not
+// validated field by field. The document is private to its owner, so this
+// can only affect the owner's own data.
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    // Check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if the user owns the path (user-owned subcollections)
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Validate that the document contains only the allowed fields
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // Validate required fields exist
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    // Optional string: absent, or a string within the length bounds
+    function isValidOptionalString(data, field, minLen, maxLen) {
+      return !(field in data) ||
+             (data[field] is string &&
+              data[field].size() >= minLen &&
+              data[field].size() <= maxLen);
+    }
+
+    // Optional map: absent, or a map with a bounded number of keys
+    function isValidOptionalMap(data, field, maxKeys) {
+      return !(field in data) || (data[field] is map && data[field].size() <= maxKeys);
+    }
+
+    // Optional list: absent, or a list within the size limit
+    function isValidOptionalList(data, field, maxSize) {
+      return !(field in data) || (data[field] is list && data[field].size() <= maxSize);
+    }
+
+    // ===============================================================
+    // Domain Validators (used in BOTH create and update)
+    // ===============================================================
+
+    // Open Charge Map station snapshot
+    function isValidStation(station, stationId) {
+      return station is map &&
+             station.keys().hasOnly([
+               'ID', 'UUID', 'AddressInfo', 'OperatorInfo', 'UsageType', 'StatusType',
+               'Connections', 'NumberOfPoints', 'GeneralComments', 'DateLastVerified',
+               'MediaItems'
+             ]) &&
+             station.keys().hasAll(['ID']) &&
+             station.ID is int &&
+             string(station.ID) == stationId &&
+             isValidOptionalString(station, 'UUID', 1, 64) &&
+             isValidOptionalMap(station, 'AddressInfo', 20) &&
+             isValidOptionalMap(station, 'OperatorInfo', 20) &&
+             isValidOptionalMap(station, 'UsageType', 20) &&
+             isValidOptionalMap(station, 'StatusType', 20) &&
+             isValidOptionalList(station, 'Connections', 50) &&
+             isValidOptionalList(station, 'MediaItems', 50) &&
+             (!('NumberOfPoints' in station) ||
+               (station.NumberOfPoints is int &&
+                station.NumberOfPoints >= 0 &&
+                station.NumberOfPoints <= 1000)) &&
+             isValidOptionalString(station, 'GeneralComments', 0, 5000) &&
+             isValidOptionalString(station, 'DateLastVerified', 1, 40);
+    }
+
+    // Favorites document (full document — the app always overwrites it whole)
+    function isValidFavorite(data, stationId) {
+      return hasOnlyAllowedFields(['station', 'rate', 'note', 'addedAt']) &&
+             hasRequiredFields(['station', 'rate']) &&
+             isValidStation(data.station, stationId) &&
+             data.rate is int && data.rate >= 1 && data.rate <= 5 &&
+             isValidOptionalString(data, 'note', 1, 500) &&
+             (!('addedAt' in data) ||
+               (data.addedAt is number &&
+                data.addedAt > 0 &&
+                data.addedAt <= request.time.toMillis() / 1000 + 3600));
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    // Favorites: only the owner, with full validation on every write
+    match /users/{uid}/favorites/{stationId} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid) && isValidFavorite(request.resource.data, stationId);
+      allow update: if isOwner(uid) && isValidFavorite(request.resource.data, stationId);
+      allow delete: if isOwner(uid);
+    }
+
+    // Default deny — includes the parent users/{uid} document and everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

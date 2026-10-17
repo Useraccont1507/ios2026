@@ -77,7 +77,7 @@ final class FavoriteListVM: PFavoriteListVM {
         self.state = .list(stations: modifiedStations)
     }
     private func subscribeToEvents() {
-        repo.observeEvents { [weak self] event in
+        repo.observeEvents(owner: self) { [weak self] event in
             guard let self else { return }
             switch event {
             case .needUpdate:

@@ -16,7 +16,7 @@ final class MockAuthRepository: PAuthRepository, Sendable {
         didSet { notify() }
     }
     private var users: [String: MockUser]
-    private var handlers: [@MainActor @Sendable (SessionState) -> Void] = []
+    private let observers = ObserverList<SessionState>()
 
     init(users: [MockUser] = MockAuthRepository.mockUsers) {
         self.users = Dictionary(uniqueKeysWithValues: users.map { ($0.account.email.lowercased(), $0) })
@@ -66,16 +66,12 @@ final class MockAuthRepository: PAuthRepository, Sendable {
         session = .guest
     }
 
-    func observeSession(_ handler: @escaping @MainActor @Sendable (SessionState) -> Void) {
-        handlers.append(handler)
+    func observeSession(owner: AnyObject, _ handler: @escaping @MainActor (SessionState) -> Void) {
+        observers.add(owner: owner, handler)
     }
 
     private func notify() {
-        let handlers = self.handlers
-        let session = self.session
-        Task { @MainActor in
-            handlers.forEach { $0(session) }
-        }
+        observers.notify(session)
     }
 
     private static func isValid(email: String) -> Bool {

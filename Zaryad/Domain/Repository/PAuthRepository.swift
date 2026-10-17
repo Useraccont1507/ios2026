@@ -13,5 +13,6 @@ protocol PAuthRepository {
     func signIn(email: String, password: String) async throws -> Account
     func signUp(email: String, password: String, displayName: String?) async throws -> Account
     func signOut() async throws
-    func observeSession(_ handler: @escaping @MainActor (SessionState) -> Void)
+    /// `owner` тримається слабко: коли він звільняється, підписка зникає.
+    func observeSession(owner: AnyObject, _ handler: @escaping @MainActor (SessionState) -> Void)
 }
