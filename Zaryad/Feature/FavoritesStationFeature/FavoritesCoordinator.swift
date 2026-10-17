@@ -34,7 +34,6 @@ final class FavoritesCoordinator: Coordinator {
         naviagateToList()
     }
 
-    /// Після виходу з акаунта: закрити відкриті деталі й очистити список.
     func clearFavorites() {
         navigating.popToRootViewController(animated: false)
         favoritesInput?.clear()

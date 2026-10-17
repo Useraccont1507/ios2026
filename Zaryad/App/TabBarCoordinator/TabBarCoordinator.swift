@@ -72,7 +72,7 @@ final class TabBarCoordinator: Coordinator {
     }
 }
 
-// MARK: - PMapProvider
+// MARK: - TabBarCoordinator + Map
 extension TabBarCoordinator: PMapProvider {
     func showStation(id: Int, at coordinate: Coordinate) {
         guard let mapProvider = childCoordinators.first(where: { $0 is PMapProvider }) as? PMapProvider else { return }
@@ -81,48 +81,14 @@ extension TabBarCoordinator: PMapProvider {
     }
 }
 
-// MARK: - PProfileProvider
-extension TabBarCoordinator: PProfileProvider {
-    func showProfile() {
-        child(ProfileCoordinator.self)?.showRoot()
-        select(.profile)
-    }
-}
-
-// MARK: - PProfileCoordinatorDelegate
-extension TabBarCoordinator: PProfileCoordinatorDelegate {
+// MARK: - TabBarCoordinator + Profile
+extension TabBarCoordinator: PProfileCoordinatorDelegate, PProfileProvider {
     func profileCoordinatorDidSignOut(_ coordinator: ProfileCoordinator) {
         child(FavoritesCoordinator.self)?.clearFavorites()
     }
-}
-
-extension TabBarCoordinator {
-    enum Tab: CaseIterable {
-        case map
-        case favorites
-        case profile
-
-        var tabBarItem: UITabBarItem {
-            switch self {
-            case .map:
-                UITabBarItem(
-                    title: "Карта",
-                    image: UIImage(systemName: "map"),
-                    selectedImage: UIImage(systemName: "map.fill")
-                )
-            case .favorites:
-                UITabBarItem(
-                    title: "Обране",
-                    image: UIImage(systemName: "star"),
-                    selectedImage: UIImage(systemName: "star.fill")
-                )
-            case .profile:
-                UITabBarItem(
-                    title: "Профіль",
-                    image: UIImage(systemName: "person.crop.circle"),
-                    selectedImage: UIImage(systemName: "person.crop.circle.fill")
-                )
-            }
-        }
+    func showProfile() {
+        guard let profileProvider = childCoordinators.first(where: { $0 is PProfileProvider }) as? PProfileProvider else { return }
+        select(.profile)
+        profileProvider.showProfile()
     }
 }

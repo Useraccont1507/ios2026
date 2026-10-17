@@ -24,11 +24,6 @@ final class ProfileCoordinator: Coordinator {
         navigateToProfile()
     }
 
-    /// Показує корінь профілю (екран входу для гостя).
-    func showRoot() {
-        navigating.popToRootViewController(animated: false)
-    }
-
     private func navigateToProfile() {
         let vc = assembly.makeProfile(
             onSignIn: { [weak self] in self?.navigateToAuth(mode: .signIn) },
@@ -46,5 +41,12 @@ final class ProfileCoordinator: Coordinator {
             self?.navigating.popToRootViewController(animated: true)
         }
         navigating.pushViewController(vc, animated: true)
+    }
+}
+
+// MARK: - PProfileProvider
+extension ProfileCoordinator: PProfileProvider {
+    func showProfile() {
+        navigating.popToRootViewController(animated: false)
     }
 }
