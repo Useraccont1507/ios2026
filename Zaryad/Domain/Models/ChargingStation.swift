@@ -19,6 +19,18 @@ struct ChargingStation: Sendable {
     let numberOfPoints: Int?
     let generalComments: String?
     let dateLastVerified: Date?
+    /// Фото від користувачів (OCM `MediaItems`, приходять з `includecomments=true`).
+    var mediaItems: [MediaItem]? = nil
+}
+
+// MARK: - MediaItem
+extension ChargingStation {
+    struct MediaItem: Sendable {
+        let id: Int?
+        let itemURL: String?
+        let itemThumbnailURL: String?
+        let comment: String?
+    }
 }
 
 // MARK: - AddressInfo

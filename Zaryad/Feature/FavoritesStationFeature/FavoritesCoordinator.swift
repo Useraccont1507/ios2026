@@ -8,31 +8,35 @@
 import UIKit
 
 final class FavoritesCoordinator: Coordinator {
-    enum Completion {
-        case showOnMap(ChargingStation)
-    }
+    private let container: DIContainer
+    private let assembly: FavoritesAssembly
+    private weak var mapProvider: PMapProvider?
 
-    private var completeBlock: ((FavoritesCoordinator, Completion) -> Void)?
-    private let assembly = FavoritesAssembly()
+    init(navigating: UINavigationController, container: DIContainer, mapProvider: PMapProvider?) {
+        self.container = container
+        self.assembly = FavoritesAssembly(container: container)
+        self.mapProvider = mapProvider
+        super.init(navigating: navigating)
+    }
 
     override func start() {
         naviagateToList()
     }
 
-    @discardableResult
-    func onComplete(_ completeBlock: ((FavoritesCoordinator, Completion) -> Void)?) -> Self {
-        self.completeBlock = completeBlock
-        return self
-    }
-
-    private func didFinish(_ completion: Completion) {
-        completeBlock?(self, completion)
-    }
-    
     private func naviagateToList() {
         let vc = assembly.makeFavoritesList { [weak self] station in
-            self?.didFinish(.showOnMap(station))
+            self?.navigateToStationDetails(station)
         }
         navigating.setViewControllers([vc], animated: false)
+    }
+
+    private func navigateToStationDetails(_ station: ChargingStation) {
+        StationDetailsCoordinator(
+            navigating: navigating,
+            container: container,
+            station: station,
+            mapProvider: mapProvider
+        )
+        .storeAndStart(in: self)
     }
 }

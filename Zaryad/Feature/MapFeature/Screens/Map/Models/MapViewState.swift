@@ -7,6 +7,6 @@
 
 import Foundation
 
-enum MapViewState {
-    case loading, empty, error, loaded(stations: [MapStationUIModel])
+enum MapViewState: Equatable {
+    case loading, empty, error, loaded
 }

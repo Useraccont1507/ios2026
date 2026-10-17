@@ -9,18 +9,17 @@ import UIKit
 import SwiftUI
 
 struct MapAssembly {
-    // TODO: - inject real repository (лаб 4)
-    private let repo: PStationsRepository
+    private let stationsRepo: PStationsRepository
 
-    init(repo: PStationsRepository = MockStationsRepository()) {
-        self.repo = repo
+    init(container: DIContainer) {
+        self.stationsRepo = container.stationsRepository
     }
 
     func makeMap(
-        onStationSelected: @escaping (ChargingStation) -> Void
+        onOpenDetails: @escaping (ChargingStation) -> Void
     ) -> (vc: UIViewController, input: PMapModuleInput) {
-        let vm = MapVM(repo: repo)
-        vm.onStationSelected = onStationSelected
+        let vm = MapVM(repo: stationsRepo)
+        vm.onOpenDetails = onOpenDetails
         let vc = UIHostingController(rootView: MapScreenView(vm: vm))
         return (vc, vm)
     }

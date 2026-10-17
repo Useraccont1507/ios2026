@@ -9,11 +9,10 @@ import UIKit
 import SwiftUI
 
 struct FavoritesAssembly {
-    // TODO: - inject real repository (лаб 4)
     private let repo: PFavoritesRepository
 
-    init(repo: PFavoritesRepository = MockFavoritesRepository()) {
-        self.repo = repo
+    init(container: DIContainer) {
+        self.repo = container.favoritesRepository
     }
 
     func makeFavoritesList(onStationTap: @escaping (ChargingStation) -> Void) -> UIViewController {

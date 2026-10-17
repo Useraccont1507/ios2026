@@ -12,10 +12,11 @@ final class MapVM: PMapVM {
     static let defaultRadius: Double = 10
 
     @Published private(set) var state: MapViewState
-    @Published private(set) var focus: Coordinate
+    @Published private(set) var stations: [MapStationUIModel]
+    @Published private(set) var focus: MapFocus
     @Published private(set) var selectedStation: MapStationUIModel?
 
-    var onStationSelected: ((ChargingStation) -> Void)?
+    var onOpenDetails: ((ChargingStation) -> Void)?
 
     private let repo: PStationsRepository
     private var domainStationsById: [Int: ChargingStation]
@@ -25,7 +26,8 @@ final class MapVM: PMapVM {
 
     init(repo: PStationsRepository, center: Coordinate = .kyiv, radius: Double = MapVM.defaultRadius) {
         self.state = .loading
-        self.focus = center
+        self.stations = []
+        self.focus = MapFocus(coordinate: center, radius: radius)
         self.repo = repo
         self.domainStationsById = [:]
         self.lastQuery = (center, radius)
@@ -48,22 +50,22 @@ final class MapVM: PMapVM {
         }
     }
     func selectStation(id: Int) {
-        guard case let .loaded(stations) = state,
-              let station = stations.first(where: { $0.id == id }) else { return }
+        guard let station = stations.first(where: { $0.id == id }) else { return }
         selectedStation = station
-        if let domain = domainStationsById[id] {
-            onStationSelected?(domain)
-        }
     }
     func deselectStation() {
         selectedStation = nil
+    }
+    func openDetails() {
+        guard let id = selectedStation?.id, let domain = domainStationsById[id] else { return }
+        onOpenDetails?(domain)
     }
     func retry() {
         search(near: lastQuery.center, radius: lastQuery.radius)
     }
     private func apply(result: [ChargingStation]) {
-        let stations = MapStationUIMapper().map(result)
-        state = stations.isEmpty ? .empty : .loaded(stations: stations)
+        stations = MapStationUIMapper().map(result)
+        state = stations.isEmpty ? .empty : .loaded
         domainStationsById = [:]
         result.forEach {
             domainStationsById[$0.id] = $0
@@ -80,7 +82,7 @@ final class MapVM: PMapVM {
 // MARK: - PMapModuleInput
 extension MapVM: PMapModuleInput {
     func showStation(id: Int, at coordinate: Coordinate) {
-        focus = coordinate
+        focus = MapFocus(coordinate: coordinate, radius: 1)
         pendingSelectionId = id
         search(near: coordinate, radius: lastQuery.radius)
     }

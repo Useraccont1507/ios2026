@@ -140,6 +140,7 @@
 				INFOPLIST_FILE = Zaryad/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Zaryad;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Zaryad показує зарядні станції поруч з вами.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -178,6 +179,7 @@
 				INFOPLIST_FILE = Zaryad/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Zaryad;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Zaryad показує зарядні станції поруч з вами.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;

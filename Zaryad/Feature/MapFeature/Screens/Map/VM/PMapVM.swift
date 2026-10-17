@@ -9,14 +9,17 @@ import Foundation
 
 protocol PMapVM: ObservableObject {
     var state: MapViewState { get }
+    /// Останні знайдені станції — не очищаються на `.loading`, щоб піни не зникали під час нового пошуку.
+    var stations: [MapStationUIModel] { get }
     /// Точка, на яку карта має відцентруватись (стартова або прийшла з іншого табу).
-    var focus: Coordinate { get }
+    var focus: MapFocus { get }
     var selectedStation: MapStationUIModel? { get }
 
     /// Викликати, коли користувач зупинив рух карти. `radius` — у кілометрах.
     func search(near: Coordinate, radius: Double)
     func selectStation(id: Int)
     func deselectStation()
+    func openDetails()
     func retry()
 }
 

@@ -9,6 +9,12 @@ import UIKit
 
 final class TabBarCoordinator: Coordinator {
     private let tabBarController = UITabBarController()
+    private let container: DIContainer
+
+    init(navigating: UINavigationController, container: DIContainer) {
+        self.container = container
+        super.init(navigating: navigating)
+    }
 
     override func start() {
         let controllers = Tab.allCases.map(makeFlow)
@@ -22,15 +28,9 @@ final class TabBarCoordinator: Coordinator {
         navigation.tabBarItem = tab.tabBarItem
         switch tab {
         case .map:
-            MapCoordinator(navigating: navigation).storeAndStart(in: self)
+            MapCoordinator(navigating: navigation, container: container).storeAndStart(in: self)
         case .favorites:
-            FavoritesCoordinator(navigating: navigation)
-                .onComplete { [weak self] _, completion in
-                    switch completion {
-                    case .showOnMap(let station):
-                        self?.showOnMap(station)
-                    }
-                }
+            FavoritesCoordinator(navigating: navigation, container: container, mapProvider: self)
                 .storeAndStart(in: self)
         }
         return navigation
@@ -40,13 +40,14 @@ final class TabBarCoordinator: Coordinator {
         guard let index = Tab.allCases.firstIndex(of: tab) else { return }
         tabBarController.selectedIndex = index
     }
+}
 
-    private func showOnMap(_ station: ChargingStation) {
-        guard let coordinate = station.coordinate,
-              let mapCoordinator = childCoordinators.first(where: { $0 is MapCoordinator }) as? MapCoordinator
-        else { return }
+// MARK: - PMapProvider
+extension TabBarCoordinator: PMapProvider {
+    func showStation(id: Int, at coordinate: Coordinate) {
+        guard let mapProvider = childCoordinators.first(where: { $0 is PMapProvider }) as? PMapProvider else { return }
         select(.map)
-        mapCoordinator.showStation(id: station.id, at: coordinate)
+        mapProvider.showStation(id: id, at: coordinate)
     }
 }
 

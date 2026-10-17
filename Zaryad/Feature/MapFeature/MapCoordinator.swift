@@ -8,16 +8,18 @@
 import UIKit
 
 final class MapCoordinator: Coordinator {
-    private let assembly = MapAssembly()
+    private let container: DIContainer
+    private let assembly: MapAssembly
     private weak var mapInput: PMapModuleInput?
+
+    init(navigating: UINavigationController, container: DIContainer) {
+        self.container = container
+        self.assembly = MapAssembly(container: container)
+        super.init(navigating: navigating)
+    }
 
     override func start() {
         navigateToMap()
-    }
-
-    func showStation(id: Int, at coordinate: Coordinate) {
-        navigating.popToRootViewController(animated: false)
-        mapInput?.showStation(id: id, at: coordinate)
     }
 
     private func navigateToMap() {
@@ -29,6 +31,20 @@ final class MapCoordinator: Coordinator {
     }
 
     private func navigateToStationDetails(_ station: ChargingStation) {
-        // TODO: - station details screen
+        StationDetailsCoordinator(
+            navigating: navigating,
+            container: container,
+            station: station,
+            mapProvider: self
+        )
+        .storeAndStart(in: self)
+    }
+}
+
+// MARK: - PMapProvider
+extension MapCoordinator: PMapProvider {
+    func showStation(id: Int, at coordinate: Coordinate) {
+        navigating.popToRootViewController(animated: true)
+        mapInput?.showStation(id: id, at: coordinate)
     }
 }

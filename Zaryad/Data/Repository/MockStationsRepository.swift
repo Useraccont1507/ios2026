@@ -33,19 +33,24 @@ private extension MockStationsRepository {
     static let mockStations: [ChargingStation] = [
         station(id: 1, name: "EcoCharge Хрещатик", address: "вул. Хрещатик, 22",
                 lat: 50.4501, lon: 30.5234, powerKW: 180, connector: (33, "CCS (Type 2)"),
-                operatorName: "EcoCharge", isOperational: true),
+                operatorName: "EcoCharge", isOperational: true,
+                comments: "Підземний паркінг ТЦ, рівень -2. Перші 2 години паркування безкоштовні під час зарядки.",
+                phone: "+380 44 000 00 01", website: "https://ecocharge.example"),
         station(id: 2, name: "YASNO · Арена", address: "пр. Науки, 5",
                 lat: 50.4110, lon: 30.5290, powerKW: 120, connector: (33, "CCS (Type 2)"),
-                operatorName: "YASNO E", isOperational: true),
+                operatorName: "YASNO E", isOperational: true,
+                comments: "Біля входу на арену. Цілодобово, оплата в застосунку YASNO E."),
         station(id: 3, name: "GO TO-U · Поділ", address: "вул. Сагайдачного, 10",
                 lat: 50.4650, lon: 30.5150, powerKW: 60, connector: (25, "Type 2"),
                 operatorName: "GO TO-U", isOperational: true),
         station(id: 4, name: "City Charge · Оболонь", address: "пр. Оболонський, 1",
                 lat: 50.5010, lon: 30.4980, powerKW: 22, connector: (25, "Type 2"),
-                operatorName: "City Charge", isOperational: false),
+                operatorName: "City Charge", isOperational: false,
+                comments: "Тимчасово не працює: заміна обладнання."),
         station(id: 5, name: "Tesla Supercharger · Лук'янівка", address: "вул. Мельникова, 12",
                 lat: 50.4620, lon: 30.4780, powerKW: 250, connector: (27, "Tesla"),
-                operatorName: "Tesla", isOperational: true),
+                operatorName: "Tesla", isOperational: true,
+                comments: "Для авто інших марок — через застосунок Tesla.", website: "https://tesla.com"),
         station(id: 6, name: "AutoEnterprise · Позняки", address: "вул. Драгоманова, 31",
                 lat: 50.3990, lon: 30.6340, powerKW: 50, connector: (2, "CHAdeMO"),
                 operatorName: "AutoEnterprise", isOperational: true),
@@ -66,7 +71,8 @@ private extension MockStationsRepository {
     static func station(
         id: Int, name: String, address: String,
         lat: Double, lon: Double, powerKW: Int,
-        connector: (id: Int, title: String), operatorName: String, isOperational: Bool
+        connector: (id: Int, title: String), operatorName: String, isOperational: Bool,
+        comments: String? = nil, phone: String? = nil, website: String? = nil
     ) -> ChargingStation {
         ChargingStation(
             id: id,
@@ -79,11 +85,11 @@ private extension MockStationsRepository {
                 country: .init(isoCode: "UA", title: "Ukraine"),
                 latitude: lat,
                 longitude: lon,
-                contactTelephone1: nil,
+                contactTelephone1: phone,
                 distance: nil,
                 distanceUnit: 2
             ),
-            operatorInfo: .init(id: nil, title: operatorName, websiteURL: nil),
+            operatorInfo: .init(id: nil, title: operatorName, websiteURL: website),
             usageType: .init(id: 1, title: "Public", isPayAtLocation: true),
             statusType: .init(
                 id: 50,
@@ -103,7 +109,7 @@ private extension MockStationsRepository {
                 )
             ],
             numberOfPoints: 2,
-            generalComments: nil,
+            generalComments: comments,
             dateLastVerified: Date()
         )
     }
