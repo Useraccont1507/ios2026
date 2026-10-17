@@ -16,8 +16,9 @@ struct FavoritesAssembly {
         self.repo = repo
     }
 
-    func makeFavoritesList() -> UIViewController {
+    func makeFavoritesList(onStationTap: @escaping (ChargingStation) -> Void) -> UIViewController {
         let vm = FavoriteListVM(repo: repo)
+        vm.onStationTap = onStationTap
         return UIHostingController(rootView: FavoritesListView(vm: vm))
     }
 }
