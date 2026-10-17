@@ -11,6 +11,10 @@ final class FavoritesCoordinator: Coordinator {
     private let assembly = FavoritesAssembly()
 
     override func start() {
+        naviagateToList()
+    }
+    
+    private func naviagateToList() {
         let vc = assembly.makeFavoritesList()
         navigating.setViewControllers([vc], animated: false)
     }
