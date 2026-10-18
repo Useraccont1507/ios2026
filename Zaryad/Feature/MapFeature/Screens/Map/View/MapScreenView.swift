@@ -29,6 +29,9 @@ struct MapScreenView<VM: PMapVM>: View {
                     position = .region(Self.region(for: focus))
                 }
             }
+            .onChange(of: vm.selectedStation?.id) { _, id in
+                if id != nil { mode = .map }
+            }
     }
 
     private var modePicker: some View {
