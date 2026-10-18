@@ -144,6 +144,8 @@ struct StationDetailsView<VM: PStationDetailsVM>: View {
                 vm.openRoute()
             } label: {
                 Label("Маршрут", systemImage: "arrow.triangle.turn.up.right.diamond.fill")
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)

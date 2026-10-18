@@ -49,7 +49,7 @@ final class MapVM: PMapVM {
             do {
                 let result = try await repo.stations(near: near, radius: radius)
                 guard !Task.isCancelled else { return }
-                apply(result: result)
+                apply(result: result, center: near)
             } catch {
                 guard !Task.isCancelled else { return }
                 state = .error
@@ -64,7 +64,11 @@ final class MapVM: PMapVM {
         selectedStation = nil
     }
     func openDetails() {
-        guard let id = selectedStation?.id, let domain = domainStationsById[id] else { return }
+        guard let id = selectedStation?.id else { return }
+        openDetails(id: id)
+    }
+    func openDetails(id: Int) {
+        guard let domain = domainStationsById[id] else { return }
         onOpenDetails?(domain)
     }
     func retry() {
@@ -79,8 +83,8 @@ final class MapVM: PMapVM {
             search(near: center, radius: radius)
         }
     }
-    private func apply(result: [ChargingStation]) {
-        stations = MapStationUIMapper().map(result)
+    private func apply(result: [ChargingStation], center: Coordinate) {
+        stations = MapStationUIMapper().map(result, from: center)
         state = stations.isEmpty ? .empty : .loaded
         domainStationsById = [:]
         result.forEach {

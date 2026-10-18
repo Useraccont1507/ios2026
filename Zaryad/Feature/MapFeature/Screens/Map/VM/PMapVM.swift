@@ -17,6 +17,7 @@ protocol PMapVM: ObservableObject {
     func selectStation(id: Int)
     func deselectStation()
     func openDetails()
+    func openDetails(id: Int)
     func retry()
 }
 

@@ -17,4 +17,5 @@ struct MapStationUIModel: Identifiable, Equatable {
     let connectorsText: String
     let operatorName: String?
     let isOperational: Bool
+    let distanceKm: Double
 }

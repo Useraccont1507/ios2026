@@ -8,7 +8,7 @@
 import Foundation
 
 struct MapStationUIMapper {
-    func map(_ station: ChargingStation) -> MapStationUIModel? {
+    func map(_ station: ChargingStation, from center: Coordinate) -> MapStationUIModel? {
         guard let coordinate = station.coordinate else { return nil }
 
         let address = [station.addressInfo?.addressLine1, station.addressInfo?.town]
@@ -31,10 +31,13 @@ struct MapStationUIMapper {
             powerKW: maxPowerKW,
             connectorsText: connectors.joined(separator: ", "),
             operatorName: station.operatorInfo?.title,
-            isOperational: station.statusType?.isOperational ?? false
+            isOperational: station.statusType?.isOperational ?? false,
+            distanceKm: coordinate.distance(to: center)
         )
     }
-    func map(_ stations: [ChargingStation]) -> [MapStationUIModel] {
-        stations.compactMap(map)
+    func map(_ stations: [ChargingStation], from center: Coordinate) -> [MapStationUIModel] {
+        stations
+            .compactMap { map($0, from: center) }
+            .sorted { $0.distanceKm < $1.distanceKm }
     }
 }

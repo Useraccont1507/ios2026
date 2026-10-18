@@ -11,6 +11,7 @@ import MapKit
 struct MapScreenView<VM: PMapVM>: View {
     @ObservedObject var vm: VM
     @State private var position: MapCameraPosition
+    @State private var mode: Mode = .map
 
     init(vm: VM) {
         self.vm = vm
@@ -18,9 +19,9 @@ struct MapScreenView<VM: PMapVM>: View {
     }
 
     var body: some View {
-        map
+        content
             .overlay(alignment: .top) { statusBanner }
-            .safeAreaInset(edge: .bottom) { selectedCard }
+            .safeAreaInset(edge: .top) { modePicker }
             .navigationTitle("Карта")
             .navigationBarTitleDisplayMode(.inline)
             .onChange(of: vm.focus) { _, focus in
@@ -28,6 +29,26 @@ struct MapScreenView<VM: PMapVM>: View {
                     position = .region(Self.region(for: focus))
                 }
             }
+    }
+
+    private var modePicker: some View {
+        Picker("Режим", selection: $mode) {
+            ForEach(Mode.allCases, id: \.self) { Text($0.title).tag($0) }
+        }
+        .pickerStyle(.segmented)
+        .frame(maxWidth: 260)
+        .padding(.vertical, 8)
+        .frame(maxWidth: .infinity)
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        switch mode {
+        case .map:
+            map.safeAreaInset(edge: .bottom) { selectedCard }
+        case .list:
+            StationsList(stations: vm.stations) { vm.openDetails(id: $0) }
+        }
     }
 
     private var map: some View {
@@ -235,5 +256,80 @@ private struct SelectedStationCard: View {
         }
         .contentShape(Rectangle())
         .onTapGesture(perform: onDetails)
+    }
+}
+
+// MARK: - Mode
+private enum Mode: CaseIterable {
+    case map, list
+
+    var title: String {
+        switch self {
+        case .map: "Карта"
+        case .list: "Список"
+        }
+    }
+}
+
+// MARK: - StationsList
+private struct StationsList: View {
+    let stations: [MapStationUIModel]
+    let onSelect: (Int) -> Void
+
+    var body: some View {
+        List(stations) { station in
+            Button { onSelect(station.id) } label: {
+                StationRow(station: station)
+            }
+            .buttonStyle(.plain)
+        }
+        .listStyle(.plain)
+    }
+}
+
+private struct StationRow: View {
+    let station: MapStationUIModel
+    @ScaledMetric(relativeTo: .subheadline) private var badgeSize: CGFloat = 44
+
+    var body: some View {
+        HStack(spacing: 12) {
+            VStack(spacing: 0) {
+                Text(station.powerKW.map(String.init) ?? "—")
+                    .font(.subheadline.bold())
+                Text("кВт")
+                    .font(.caption2.weight(.semibold))
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.5)
+            .padding(4)
+            .foregroundStyle(station.power == .fast ? .black.opacity(0.85) : .white)
+            .frame(width: badgeSize, height: badgeSize)
+            .background(Color(uiColor: station.power.color), in: Circle())
+            .opacity(station.isOperational ? 1 : 0.5)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(station.name)
+                    .font(.headline)
+                    .lineLimit(1)
+                Text(station.address)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                if !station.connectorsText.isEmpty {
+                    Text(station.connectorsText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+            }
+
+            Spacer(minLength: 8)
+
+            Text(station.distanceKm.formatted(.number.precision(.fractionLength(1))) + " км")
+                .font(.subheadline.monospacedDigit())
+                .foregroundStyle(.secondary)
+        }
+        .contentShape(Rectangle())
+        .padding(.vertical, 4)
     }
 }
