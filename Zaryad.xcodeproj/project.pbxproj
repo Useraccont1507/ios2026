@@ -11,12 +11,23 @@
 		E375FC7A394AA533D6E49B00 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = D4B036E3776990CFE619F082 /* FirebaseCore */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		44503054991ED5849033D861 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F41619FE3062FDC4006EB08C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F4161A053062FDC4006EB08C;
+			remoteInfo = Zaryad;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		E409116B89F74E2736BBD13C /* ZaryadTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZaryadTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4161A063062FDC4006EB08C /* Zaryad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zaryad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		F4161A183062FDC5006EB08C /* Exceptions for "Zaryad" folder in "Zaryad" target */ = {
+		F4161A183062FDC5006EB08C /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				App/Info.plist,
@@ -26,10 +37,19 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		93B60AA06E2080538AB07E7D /* ZaryadTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = ZaryadTests;
+			sourceTree = "<group>";
+		};
 		F4161A083062FDC4006EB08C /* Zaryad */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				F4161A183062FDC5006EB08C /* Exceptions for "Zaryad" folder in "Zaryad" target */,
+				F4161A183062FDC5006EB08C /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
 			);
 			path = Zaryad;
 			sourceTree = "<group>";
@@ -37,6 +57,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1C97F6335DBAC126919B1867 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F4161A033062FDC4006EB08C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -53,6 +80,7 @@
 			isa = PBXGroup;
 			children = (
 				F4161A083062FDC4006EB08C /* Zaryad */,
+				93B60AA06E2080538AB07E7D /* ZaryadTests */,
 				F4161A073062FDC4006EB08C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				F4161A063062FDC4006EB08C /* Zaryad.app */,
+				E409116B89F74E2736BBD13C /* ZaryadTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -68,6 +97,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		132D8B6B7042B39F4439C016 /* ZaryadTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7615E8D9FBA788C9A1B0B5EE /* Build configuration list for PBXNativeTarget "ZaryadTests" */;
+			buildPhases = (
+				3193857405F97D9B035BD911 /* Sources */,
+				1C97F6335DBAC126919B1867 /* Frameworks */,
+				421781F1EF5E2F7E5AA264C3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3CB2E8BB97636A8A1A9D3260 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				93B60AA06E2080538AB07E7D /* ZaryadTests */,
+			);
+			name = ZaryadTests;
+			packageProductDependencies = (
+			);
+			productName = ZaryadTests;
+			productReference = E409116B89F74E2736BBD13C /* ZaryadTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		F4161A053062FDC4006EB08C /* Zaryad */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F4161A193062FDC5006EB08C /* Build configuration list for PBXNativeTarget "Zaryad" */;
@@ -102,6 +154,10 @@
 				LastSwiftUpdateCheck = 2700;
 				LastUpgradeCheck = 2700;
 				TargetAttributes = {
+					132D8B6B7042B39F4439C016 = {
+						CreatedOnToolsVersion = 27.0;
+						TestTargetID = F4161A053062FDC4006EB08C;
+					};
 					F4161A053062FDC4006EB08C = {
 						CreatedOnToolsVersion = 27.0;
 					};
@@ -125,11 +181,19 @@
 			projectRoot = "";
 			targets = (
 				F4161A053062FDC4006EB08C /* Zaryad */,
+				132D8B6B7042B39F4439C016 /* ZaryadTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		421781F1EF5E2F7E5AA264C3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F4161A043062FDC4006EB08C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -140,6 +204,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3193857405F97D9B035BD911 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F4161A023062FDC4006EB08C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -149,7 +220,35 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		3CB2E8BB97636A8A1A9D3260 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F4161A053062FDC4006EB08C /* Zaryad */;
+			targetProxy = 44503054991ED5849033D861 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		9AFA69D84D9FD5AB45D49976 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6GA6W2287X;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zaryad.ZaryadTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Zaryad.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Zaryad";
+			};
+			name = Debug;
+		};
 		F4161A1A3062FDC5006EB08C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -351,9 +450,38 @@
 			};
 			name = Release;
 		};
+		FFCD6EA7323F0B200D20F4F1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6GA6W2287X;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zaryad.ZaryadTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Zaryad.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Zaryad";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		7615E8D9FBA788C9A1B0B5EE /* Build configuration list for PBXNativeTarget "ZaryadTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9AFA69D84D9FD5AB45D49976 /* Debug */,
+				FFCD6EA7323F0B200D20F4F1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F4161A013062FDC4006EB08C /* Build configuration list for PBXProject "Zaryad" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
