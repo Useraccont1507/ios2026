@@ -80,3 +80,33 @@ func makeFavoriteDTO(id: Int = 42, rate: Int = 4, note: String? = "нотатк�
         addedAt: addedAt
     )
 }
+// MARK: - Account -
+func makeAccount(email: String = "driver@zaryad.app", displayName: String? = "Ілля Верезей") -> Account {
+    Account(id: "uid-1", email: email, displayName: displayName, createdAt: Date(timeIntervalSince1970: 1_700_000_000))
+}
+// MARK: - OCM DTO -
+func makeOCMDTO(
+    id: Int? = 1,
+    latitude: Double? = 50.45,
+    longitude: Double? = 30.52,
+    powers: [Double] = [22],
+    connectors: [String] = ["Type 2"],
+    dateLastVerified: String? = nil
+) -> OCMStationDTO {
+    OCMStationDTO(
+        id: id, uuid: nil,
+        addressInfo: .init(
+            title: "Станція", addressLine1: "вул. 1", town: "Київ", postcode: nil, country: nil,
+            latitude: latitude, longitude: longitude, contactTelephone1: nil, distance: nil, distanceUnit: nil
+        ),
+        operatorInfo: nil, usageType: nil,
+        statusType: .init(id: 50, title: "Operational", isOperational: true),
+        connections: zip(powers, connectors).map { power, title in
+            .init(
+                id: nil, connectionType: .init(id: nil, title: title, formalName: nil), currentType: nil, level: nil,
+                powerKW: power, quantity: 1, amps: nil, voltage: nil
+            )
+        },
+        numberOfPoints: nil, generalComments: nil, dateLastVerified: dateLastVerified, mediaItems: nil
+    )
+}

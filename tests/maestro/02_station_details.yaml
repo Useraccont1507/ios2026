@@ -1,0 +1,28 @@
+# FR-2, FR-3: деталі станції зі списку.
+appId: com.zaryad.Zaryad
+name: Деталі станції
+tags: [smoke, guest]
+---
+- launchApp:
+    permissions:
+      location: inuse
+- extendedWaitUntil:
+    visible: "Список"
+    timeout: 15000
+- tapOn: "Список"
+- extendedWaitUntil:
+    visible: ".*\\d км"
+    timeout: 20000
+- tapOn: ".*\\d км"
+- extendedWaitUntil:
+    visible: "Характеристики"
+    timeout: 10000
+- assertVisible: "Макс. потужність"
+- assertVisible: "Маршрут"
+- assertVisible: "На карті"
+- scrollUntilVisible:
+    element: "Роз'єми"
+- tapOn: "На карті"
+- extendedWaitUntil:
+    visible: "Детальніше"
+    timeout: 15000

@@ -1,0 +1,45 @@
+# FR-12, FR-6..FR-9: вхід, додавання в обране з оцінкою, видалення.
+# Запуск: maestro test -e EMAIL=... -e PASSWORD=... tests/maestro/04_sign_in_favorite.yaml
+appId: com.zaryad.Zaryad
+name: Вхід + обране
+tags: [auth]
+---
+- launchApp:
+    clearState: true
+    permissions:
+      location: inuse
+- tapOn: "Профіль"
+- tapOn:
+    text: "Увійти"
+    index: 0
+- tapOn: "Email"
+- inputText: ${EMAIL}
+- tapOn: "Пароль"
+- inputText: ${PASSWORD}
+- tapOn: "Увійти"
+- extendedWaitUntil:
+    visible: "Вийти"
+    timeout: 15000
+- tapOn: "Карта"
+- tapOn: "Список"
+- extendedWaitUntil:
+    visible: ".*\\d км"
+    timeout: 20000
+- tapOn: ".*\\d км"
+- extendedWaitUntil:
+    visible: "В обране"
+    timeout: 10000
+- tapOn: "В обране"
+- tapOn: "Оцінка"
+- tapOn: "Надіслати"
+- extendedWaitUntil:
+    visible: "В обраному.*"
+    timeout: 10000
+- tapOn: "Обране"
+- extendedWaitUntil:
+    visible: "Видалити з обраного"
+    timeout: 10000
+- tapOn: "Видалити з обраного"
+- extendedWaitUntil:
+    notVisible: "Видалити з обраного"
+    timeout: 10000

@@ -1,0 +1,22 @@
+# FR-1: перемикач Карта/Список. Регресія бага з Picker у toolbar (виправлено в a08321c).
+appId: com.zaryad.Zaryad
+name: Карта ↔ Список
+tags: [smoke, guest]
+---
+- launchApp:
+    clearState: true
+    permissions:
+      location: inuse
+- extendedWaitUntil:
+    visible: "Карта"
+    timeout: 15000
+- tapOn: "Список"
+- extendedWaitUntil:
+    visible: ".*\\d км"
+    timeout: 20000
+# У режимі списку сегменти Picker не потрапляють у дерево доступності XCUITest — тап за координатою.
+- tapOn:
+    point: "35%,15%"
+- assertNotVisible: ".*\\d км"
+- tapOn: "Список"
+- assertVisible: ".*\\d км"

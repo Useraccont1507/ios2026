@@ -1,0 +1,26 @@
+# FR-16, FR-4, NFR-3: гість бачить пропозицію входу; некоректні дані реєстрації дають зрозумілу помилку.
+appId: com.zaryad.Zaryad
+name: Профіль гостя
+tags: [smoke, guest]
+---
+- launchApp:
+    clearState: true
+    permissions:
+      location: inuse
+- tapOn: "Профіль"
+- assertVisible: "Збережіть обране в хмарі"
+- tapOn:
+    text: "Створити акаунт"
+    index: 0
+- assertVisible: "Реєстрація"
+- assertVisible: "Пароль — щонайменше 6 символів."
+- tapOn: "Email"
+- inputText: "not-an-email"
+- tapOn: "Пароль"
+- inputText: "123"
+# Некоректні дані — Firebase відхиляє запит, акаунт не створюється.
+- tapOn: "Створити акаунт"
+- extendedWaitUntil:
+    visible: "Перевірте формат email.|Пароль має містити щонайменше 6 символів."
+    timeout: 10000
+- assertVisible: "Реєстрація"
